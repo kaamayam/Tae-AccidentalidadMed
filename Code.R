@@ -1,0 +1,97 @@
+library(ggplot2)
+library(tidyverse)
+library(lubridate)
+library(bsts)
+
+
+datos<- readRDS(file = "bases_datos/datos.rds")
+holidays_fecha<-readRDS(file = "bases_datos/Holidays.rds") %>% data.frame()
+
+conteos <- datos %>% group_by(FECHA_ACCIDENTE, CLASE_ACCIDENTE=as.factor(CLASE_ACCIDENTE)) %>%
+  count() %>% data.frame()
+
+# Arreglando variables predictivas
+conteos$dia_n <-  as.integer(format(conteos$FECHA_ACCIDENTE, "%d"))
+conteos$dia <- as.factor(wday(conteos$FECHA_ACCIDENTE, label = TRUE))
+conteos$mes <- as.factor(format(conteos$FECHA_ACCIDENTE, "%b")) 
+conteos$ano <- as.integer(format(conteos$FECHA_ACCIDENTE, "%Y"))
+conteos$holi_bin <- ifelse(conteos$FECHA_ACCIDENTE %in% holidays_fecha$. , 1, 0) %>% factor()
+
+
+
+# particion de la base de datos
+train <- conteos %>% filter(ano <= 2017)
+validation <- conteos %>% filter(ano >= 2018 && ano <= 2019)
+test <- conteos  %>% filter(ano >= 2020)
+
+levels(train$CLASE_ACCIDENTE)
+str(train)
+
+
+
+#### modelo de prueba *************************************************************
+
+modelo <- lm(n ~ ano + mes + dia_n + dia + holi_bin + CLASE_ACCIDENTE, data = train)
+#saveRDS(modelo, "modelo.rds")
+
+
+
+
+
+
+
+
+
+
+
+# Diario ----- input: 2014-03-25  (ano, mes, dia)
+prediccion_dia <- function(f1, claseaccidente){
+  f1 <- as.Date(f1)
+  dia_n <-  as.integer(format(f1, "%d"))
+  dia <- as.factor(wday(f1, label = TRUE))
+  mes <- as.factor(format(f1, "%b")) 
+  ano <- as.integer(format(f1, "%Y"))
+  holi_bin <- ifelse(f1 %in% holidays_fecha$. , 1, 0) %>% factor()
+  new_dat <- data.frame(dia_n, dia, mes, ano, holi_bin, CLASE_ACCIDENTE = claseaccidente)
+  return(predict(modelo, new_dat, type="response") %>% as.integer())
+}
+
+
+# Semanal ----input: f1=2014-03-25, f2 = 2014-04-03
+prediccion_semana <- function(f1, f2, claseaccidente){
+  f1 <- f1 %>% as.Date()
+  f2 <- f2 %>% as.Date()
+  secuencia <- seq(f1, f2, 1)
+  return(sum(prediccion_dia(secuencia, claseaccidente)))
+}
+
+
+
+# Mensual ---- input: 01 or 02 .... or 12
+#ano <- 2014
+#mes <- 02
+prediccion_mes <- function(ano,mes, claseaccidente){
+  f1 <- as.Date(paste(ano, mes, 01, sep = "-")) %>%  as.Date()
+  f2 <- bsts::LastDayInMonth(f1) %>%  as.Date()
+  secuencia <- seq(f1, f2, 1)
+  return(sum(prediccion_dia(secuencia, claseaccidente)))
+}
+
+
+
+
+
+
+#ggplot(data=conteos,mapping = aes(x = FECHA_ACCIDENTE , y = n)) +
+#  geom_point(aes(color = CLASE_ACCIDENTE)) + facet_grid(CLASE_ACCIDENTE~.)
+# se observa que las variciones en los conteos de accidentes por tipo de accidente 
+# son constantes a exepcion del ano 2020 donde los conteos bajaron
+
+#ggplot(data=conteos,mapping = aes(x = FECHA_ACCIDENTE , y = n)) +
+#  geom_point(aes(color = CLASE_ACCIDENTE))
+
+
+
+
+
+
