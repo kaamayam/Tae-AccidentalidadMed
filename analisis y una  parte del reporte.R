@@ -1,12 +1,12 @@
-#IntroducciÛn
+#Introducci√≥n
 
-El presente trabajo es un reporte tecnico sobre la predicciÛn de incidentes viales en la Ciudad de Medellin a partir de datos historicos de accidentes reportados por la Sectretaria de Movilidad. De acuerdo a la OrganizaciÛn Mundial de la Salud, al aÒo se presenta la pÈrdida de m·s de 1,5 millones de vidas en siniestros viales, estos se han convertido en una problem·tica social por el daÒo que producen no solo en las familias sino tambiÈn en la comunidad. En el caso de la ciudad de MedellÌn, seg˙n cifras de la AlcaldÌa de MedellÌn y la Secretaria de Movilidad, entre los aÒos 2014 y 2020 se presentaron aproximadamente m·s de 200.000 incidentes viales.Ahora bien, las principales causas de estos incidentes se deben a no mantener una distancia prudente, no respetar las seÒales de tr·nsito y en especial por la imprudencia de los conductores. 
+El presente trabajo es un reporte tecnico sobre la predicci√≥n de incidentes viales en la Ciudad de Medellin a partir de datos historicos de accidentes reportados por la Sectretaria de Movilidad. De acuerdo a la Organizaci√≥n Mundial de la Salud, al a√±o se presenta la p√©rdida de m√°s de 1,5 millones de vidas en siniestros viales, estos se han convertido en una problem√°tica social por el da√±o que producen no solo en las familias sino tambi√©n en la comunidad. En el caso de la ciudad de Medell√≠n, seg√∫n cifras de la Alcald√≠a de Medell√≠n y la Secretaria de Movilidad, entre los a√±os 2014 y 2020 se presentaron aproximadamente m√°s de 200.000 incidentes viales.Ahora bien, las principales causas de estos incidentes se deben a no mantener una distancia prudente, no respetar las se√±ales de tr√°nsito y en especial por la imprudencia de los conductores. 
 
-El an·lisis predictivo agrupa una variedad de tÈcnicas estadÌsticas de modelizaciÛn, aprendizaje autom·tico y minerÌa de datos que analiza los datos actuales e histÛricos reales para hacer predicciones acerca del futuro o acontecimientos no conocidos, con este trabajo pretendemos aportar  a la prevenciÛn de accidentes dre tr·nsito en la Ciudad,implementado un modelo que permitan predecir los incidentes viales  en la Ciudad de MedellÌn que puedan ocurrir en determinado dÌa, semana o mes, el cual puede ser utilizado por los organismos encargados de desarrollar planes y estrategias para prevenir acidentes, para el caso de Medellin la Secretaria de Movilidad .
+El an√°lisis predictivo agrupa una variedad de t√©cnicas estad√≠sticas de modelizaci√≥n, aprendizaje autom√°tico y miner√≠a de datos que analiza los datos actuales e hist√≥ricos reales para hacer predicciones acerca del futuro o acontecimientos no conocidos, con este trabajo pretendemos aportar  a la prevenci√≥n de accidentes dre tr√°nsito en la Ciudad,implementado un modelo que permitan predecir los incidentes viales  en la Ciudad de Medell√≠n que puedan ocurrir en determinado d√≠a, semana o mes, el cual puede ser utilizado por los organismos encargados de desarrollar planes y estrategias para prevenir acidentes, para el caso de Medellin la Secretaria de Movilidad .
 
-Para llevar a cabo nuestro trabajo nos apoyamos  en la informaciÛn contenida en la base de datos abierta de incidentes viales publicada por la Secretaria de Movilidad de la AlcaldÌa de MedellÌn, donde se tienen registrados 270765  accidentes de tr·nsito  desde el mes de julio de 2014 hasta el mes de agosto de 2020 ocurridos en la ciudad de MedellÌn, la fecha de publicaciÛn fue el 2020-12-28 y su ˙ltima modificaciÛn 2021-03-06.TambiÈn, se creÛ una aplicaciÛn shiny con el propÛsito de que una persona pueda hacer uso del modelo predictivo ingresando una serie de datos y con ello obtener predicciones futuras de accidentes de tr·nsito, en el siguiente enlace - - - - - se encuentra disponible un video explicativo sobre cÛmo usar dicha informaciÛn aplicaciÛn.
+Para llevar a cabo nuestro trabajo nos apoyamos  en la informaci√≥n contenida en la base de datos abierta de incidentes viales publicada por la Secretaria de Movilidad de la Alcald√≠a de Medell√≠n, donde se tienen registrados 270765  accidentes de tr√°nsito  desde el mes de julio de 2014 hasta el mes de agosto de 2020 ocurridos en la ciudad de Medell√≠n, la fecha de publicaci√≥n fue el 2020-12-28 y su √∫ltima modificaci√≥n 2021-03-06.Tambi√©n, se cre√≥ una aplicaci√≥n shiny con el prop√≥sito de que una persona pueda hacer uso del modelo predictivo ingresando una serie de datos y con ello obtener predicciones futuras de accidentes de tr√°nsito, en el siguiente enlace - - - - - se encuentra disponible un video explicativo sobre c√≥mo usar dicha informaci√≥n aplicaci√≥n.
 
-Ahora bien, las base de datos inicial y  la base con los datos limpios y las nuevas variables que se consideraron se encuentran en el siguiente repositorio al igual que el cÛdigo desarrollado para la realizaciÛn del trabajo.
+Ahora bien, las base de datos inicial y  la base con los datos limpios y las nuevas variables que se consideraron se encuentran en el siguiente repositorio al igual que el c√≥digo desarrollado para la realizaci√≥n del trabajo.
 
 
 
@@ -29,20 +29,20 @@ summary(df)
 
 
 
-# ExploraciÛn base de datos
+# Exploraci√≥n base de datos
 
-En primer lugar, preparamos la base de datos para obtener buenos resultados a la hora de implementar los modelos. Al explorar la base de datos se encontraron algunos errores de digitaciÛn los cuales fueron debidamente corregidos, tambiÈn se creÛ una nueva base de datos a partir de la publicada en MEdata con las variables que consideramos m·s pertinentes para el desarrollo del modelo. 
-Encontramos en las observaciones de la variable Barrio que 18395 accidentes registrados   se ubican en el municipio de Heliconia y por ende no corresponden a la ciudad de MedellÌn, debido a esto decidimos eliminar esos datos y tambiÈn aquellos registros faltantes de informaciÛn en las variables Barrio, Comuna y LocalizaciÛn.Preguntar a Karen que m·s se elimino y por quÈ???
+En primer lugar, preparamos la base de datos para obtener buenos resultados a la hora de implementar los modelos. Al explorar la base de datos se encontraron algunos errores de digitaci√≥n los cuales fueron debidamente corregidos, tambi√©n se cre√≥ una nueva base de datos a partir de la publicada en MEdata con las variables que consideramos m√°s pertinentes para el desarrollo del modelo. 
+Encontramos en las observaciones de la variable Barrio que 18395 accidentes registrados   se ubican en el municipio de Heliconia y por ende no corresponden a la ciudad de Medell√≠n, debido a esto decidimos eliminar esos datos y tambi√©n aquellos registros faltantes de informaci√≥n en las variables Barrio, Comuna y Localizaci√≥n.Preguntar a Karen que m√°s se elimino y por qu√©???
   
   
  
-##Encontramos en las observaciones de la variable Barrio que 18395 accidentes registrados   se ubican en el municipio de Heliconia y por ende no corresponden a la ciudad de MedellÌn, debido a esto decidimos eliminar esos datos y tambiÈn aquellos registros faltantes de informaciÛn en las variables Barrio, Comuna y LocalizaciÛn.Preguntar a Karen que m·s se elimino y por quÈ???
+##Encontramos en las observaciones de la variable Barrio que 18395 accidentes registrados   se ubican en el municipio de Heliconia y por ende no corresponden a la ciudad de Medell√≠n, debido a esto decidimos eliminar esos datos y tambi√©n aquellos registros faltantes de informaci√≥n en las variables Barrio, Comuna y Localizaci√≥n.Preguntar a Karen que m√°s se elimino y por qu√©???
 install.packages("plotrix")
 library(plotrix)
 
 
 
-Accidentes_viales= c("Localizados","no localizados por falta de informaciÛn","localizados fuera de Medellin")
+Accidentes_viales= c("Localizados","no localizados por falta de informaci√≥n","localizados fuera de Medellin")
 porcentaje= c(216500,21000, 18805)
 dw=data.frame(Accidentes_viales,porcentaje)
 
@@ -60,23 +60,23 @@ pie3D(porcentaje,labes=Accidentes_viales, explode=0.06,height = 0.1,fill=dw$Acci
 ##tabla base de datos limpios
 head(df)
 
-##ExplicaciÛn variales de la base de datos
+##Explicaci√≥n variales de la base de datos
 
-##1) FECHA_ACCIDENTE: Fecha en la que ocurriÛ el accidente , el formato es A—O-MES-DI2) MES: Mes en que se presentÛ el accidente , la variable est· enumerada del 1 al 12, comenzando desde enero3) A—O: AÒo en el que se registrÛ el accidente4) BARRIO:Lugar de Medellin donde se presentÛ el accidente5)CLASE_ACCIDENTE: Los accidentes se clasifican  en  atropello, choque,incendio,volcamiento,caÌda de ocupante y otros.6)GRAVEDAD: Gavedad del acidente(Solo daÒos, con heridos, con muertos)7)holi_bin: DÌas festivos en Colombia preguntar a karen si desde el 2014 8) preguntar si separaron las coordenadas9) Fechas especiales: Semana en la que se realiza la Feria de flores en Medellin (consultar fechas)
+##1) FECHA_ACCIDENTE: Fecha en la que ocurri√≥ el accidente , el formato es A√ëO-MES-DI2) MES: Mes en que se present√≥ el accidente , la variable est√° enumerada del 1 al 12, comenzando desde enero3) A√ëO: A√±o en el que se registr√≥ el accidente4) BARRIO:Lugar de Medellin donde se present√≥ el accidente5)CLASE_ACCIDENTE: Los accidentes se clasifican  en  atropello, choque,incendio,volcamiento,ca√≠da de ocupante y otros.6)GRAVEDAD: Gavedad del acidente(Solo da√±os, con heridos, con muertos)7)holi_bin: D√≠as festivos en Colombia preguntar a karen si desde el 2014 8) preguntar si separaron las coordenadas9) Fechas especiales: Semana en la que se realiza la Feria de flores en Medellin (consultar fechas)
 
-##preguntar que m·s cambios o variables hay
+##preguntar que m√°s cambios o variables hay
 
 
-z=data.frame(table(df$A—O))
+z=data.frame(table(df$A√ëO))
 
 z
 
 
 
-table(df$GRAVEDAD, df$A—O)## eso est· como raro
+table(df$GRAVEDAD, df$A√ëO)## eso est√° como raro
 
 
-gr2 <- ggplot(z, aes(x=Var1, y=Freq, fill=Var1)) + geom_bar(stat="identity",position = "dodge")+ labs(title="Accidentes por aÒo")+
+gr2 <- ggplot(z, aes(x=Var1, y=Freq, fill=Var1)) + geom_bar(stat="identity",position = "dodge")+ labs(title="Accidentes por a√±o")+
   theme (plot.title = element_text(family="Comic Sans MS",
                                    size=rel(1.5),  
                                    vjust=2,  
@@ -89,11 +89,9 @@ gr2 <- ggplot(z, aes(x=Var1, y=Freq, fill=Var1)) + geom_bar(stat="identity",posi
 
 gr2
 
-q=table(df$A—O==2020, df$MES==5)
-q
 
 
-##Seg˙n la base de datos el aÒo donde se  presentaron  m·s accidentes fue el 2019 en comparaciÛn con los dem·s aÒos, a pesar de que solo tenemos datos para el 2020 hasta el mes de junio se puede plantear que los accidentes en ese aÒo hasta junio disminuyeron con respecto a los dem·s aÒos esto puede ser a raÌz del confinamiento por la pandemia.
+##Seg√∫n la base de datos el a√±o donde se  presentaron  m√°s accidentes fue el 2019 en comparaci√≥n con los dem√°s a√±os, a pesar de que solo tenemos datos para el 2020 hasta el mes de junio se puede plantear que los accidentes en ese a√±o hasta junio disminuyeron con respecto a los dem√°s a√±os esto puede ser a ra√≠z del confinamiento por la pandemia.
 
 
 
@@ -113,7 +111,7 @@ ggplot(df, aes(x = MES)) +
   labs(title="Frecuencia de accidentes por mes")+
   theme(plot.title = element_text(hjust = 0.5))
 
-## Con respecto a la frecuencia de accidentes registrados por mes entre 2014 y 2020 se puede observar que en el mes en que m·s se presentan incidentes viales es en Agosto, esto puede ser explicado porque en ese mes se lleva a cabo la Feria de Flores en la Ciudad de Medellin y por ende circulan m·s vehÌculos y peatones de lo normal. Asi mismo, podemos notar que el mes de abril es donde se han presentado menores accidentes.
+## Con respecto a la frecuencia de accidentes registrados por mes entre 2014 y 2020 se puede observar que en el mes en que m√°s se presentan incidentes viales es en Agosto, esto puede ser explicado porque en ese mes se lleva a cabo la Feria de Flores en la Ciudad de Medellin y por ende circulan m√°s veh√≠culos y peatones de lo normal. Asi mismo, podemos notar que el mes de abril es donde se han presentado menores accidentes.
 
 
 
@@ -141,24 +139,24 @@ gr5
 ##Los dias que con mayor frecuencia se presentaron accidentes fueron los martes y los viernes, seguido de los jueves.
 
 
-g = ggplot(df, aes(A—O, fill=GRAVEDAD) ) +
-  labs(title = "Gravedad de los accidentes por aÒo")+ylab("") +
+g = ggplot(df, aes(A√ëO, fill=GRAVEDAD) ) +
+  labs(title = "Gravedad de los accidentes por a√±o")+ylab("") +
   theme(plot.title = element_text(size = rel(2), colour = "black", family = "Comic Sans MS"))
 
 g+geom_bar(position="dodge") + scale_fill_manual(values = alpha(c("coral", "darkcyan","gray"), 1)) +
   theme(axis.title.x = element_text(face="bold", size=10))   
 
-##Este gr·fico presenta la gravedad de los accidentes registrados entre el 2014 y el 2020, se puede deducir que en todos los aÒos los accidentes registrados en su mayoria presentan heridos,falta mirar bien lo de los muertos???
+##Este gr√°fico presenta la gravedad de los accidentes registrados entre el 2014 y el 2020, se puede deducir que en todos los a√±os los accidentes registrados en su mayoria presentan heridos,falta mirar bien lo de los muertos???
 
 
 
-aa=table(df$CLASE_ACCIDENTE,df$A—O)
+aa=table(df$CLASE_ACCIDENTE,df$A√ëO)
 aa
 
 ggplot(data = df,
        mapping = aes(x =CLASE_ACCIDENTE, fill = CLASE_ACCIDENTE)) +
   geom_bar(bins = 7)+
-  facet_wrap(~A—O)+
+  facet_wrap(~A√ëO)+
   theme (plot.title = element_text(family="Comic Sans MS",
                                    size=rel(2),  
                                    vjust=2,  
@@ -173,7 +171,7 @@ r=table(df$CLASE_ACCIDENTE,df$GRAVEDAD)
 r
 
 
-## Entre el aÒo 2014 y 2020 la clase de accidente que m·s se registro fue el choque,se puede ver que las clases  caida y atropello tienen en promedio un  comportamiento similar en cada uno de los aÒos, ahora bien la clase incendio no es una variabale muy representativa ya que solo el 0.013% de los accidentes registrados pertenecen a la clase de incendio.TambiÈn, en cuanto a la relaciÛn entre accidente por clase y gravedad del accidente la mayoria de accidentes de la clase atropello presentan heridos al igual que la clase caida ocupante. Asi mismo, el 63.3% de choques en la mayoria de los casos registrados ocasiona solo daÒos y el 37.8% con heridos. Finalmente, la clase de acccidente que m·s muertes provocÛ en ese periodo fue el choque.
+## Entre el a√±o 2014 y 2020 la clase de accidente que m√°s se registro fue el choque,se puede ver que las clases  caida y atropello tienen en promedio un  comportamiento similar en cada uno de los a√±os, ahora bien la clase incendio no es una variabale muy representativa ya que solo el 0.013% de los accidentes registrados pertenecen a la clase de incendio.Tambi√©n, en cuanto a la relaci√≥n entre accidente por clase y gravedad del accidente la mayoria de accidentes de la clase atropello presentan heridos al igual que la clase caida ocupante. Asi mismo, el 63.3% de choques en la mayoria de los casos registrados ocasiona solo da√±os y el 37.8% con heridos. Finalmente, la clase de acccidente que m√°s muertes provoc√≥ en ese periodo fue el choque.
 
 
 
@@ -183,7 +181,7 @@ Cantidad_accidentes= c(3707,3479,3434,3425,3034,3001,2987,2921,2789)
 db=data.frame(Barrio,Cantidad_accidentes)
 db
 
-gr4 <- ggplot(db, aes(x=Barrio, y=Cantidad_accidentes, fill=Barrio)) + geom_bar(stat="identity")+ labs(title="Barrios donde se presentaron m·s accidentes")+
+gr4 <- ggplot(db, aes(x=Barrio, y=Cantidad_accidentes, fill=Barrio)) + geom_bar(stat="identity")+ labs(title="Barrios donde se presentaron m√°s accidentes")+
   theme (plot.title = element_text(family="Comic Sans MS",
                                    size=rel(1.5),  
                                    vjust=2,  
@@ -195,10 +193,10 @@ gr4 <- ggplot(db, aes(x=Barrio, y=Cantidad_accidentes, fill=Barrio)) + geom_bar(
   theme(axis.text.x = element_blank(), axis.ticks = element_blank(),axis.title = element_blank()) 
 gr4
 
-##En este gr·fico se pueden observar los 9 barrios donde m·s han ocurrido accidentes,La Candelaria es el sector que encabeza la lista,cabe reslatar que  dicho lugar est· ubicado en el centro de la Ciudad y allÌ hay un alto flujo de vehÌculos y peatones, esto puede explicar la cantidad de accidentes registrados en la zona. En cuanto a los lugares donde se presentaron menos accidentes estos son los corregimientos ya que est·n en con flujos de tr·fico,esto  exceptuando San Antonio de Prado. 
+##En este gr√°fico se pueden observar los 9 barrios donde m√°s han ocurrido accidentes,La Candelaria es el sector que encabeza la lista,cabe reslatar que  dicho lugar est√° ubicado en el centro de la Ciudad y all√≠ hay un alto flujo de veh√≠culos y peatones, esto puede explicar la cantidad de accidentes registrados en la zona. En cuanto a los lugares donde se presentaron menos accidentes estos son los corregimientos ya que est√°n en con flujos de tr√°fico,esto  exceptuando San Antonio de Prado. 
 
 
-##MetodologÌa para el modelo
+##Metodolog√≠a para el modelo
 
 ##Agrupamiento
 
