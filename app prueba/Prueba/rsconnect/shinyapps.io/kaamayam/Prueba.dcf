@@ -1,0 +1,13 @@
+name: Prueba
+title: Prueba
+username:
+account: kaamayam
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5229541
+bundleId: 5307845
+url: https://kaamayam.shinyapps.io/Prueba/
+when: 1638240337.23937
+lastSyncTime: 1638240337.23939
+asMultiple: FALSE
+asStatic: FALSE

@@ -1,0 +1,104 @@
+#datos<- read.csv("incidentes_viales.csv", sep = ";",quote = "")
+datos<- readRDS(file = "datos.rds")
+library(tidyverse)
+str(datos)
+table(datos$CLASE_ACCIDENTE)
+table(datos$DISEÑO)
+table(datos$COMUNA)
+table(datos$AÑO)
+table(datos$BARRIO)
+table(datos$GRAVEDAD)
+
+datos[datos == '""""'] <- NA
+#MINUSCULA
+datos<-datos %>% mutate(COMUNA = tolower(datos$COMUNA))
+datos<-datos %>% mutate(BARRIO = tolower(datos$BARRIO))
+datos<-datos %>% mutate(GRAVEDAD = tolower(datos$GRAVEDAD))
+datos<-datos %>% mutate(CLASE_ACCIDENTE = tolower(datos$CLASE_ACCIDENTE))
+datos<-datos %>% mutate(DISEÑO = tolower(datos$DISEÑO))
+#QUITAR SLASHS
+datos[,c("COMUNA","BARRIO","DISEÑO")]<-gsub("[[:punct:]]","",datos[,c("COMUNA","BARRIO","DISEÑO")],)
+#datos$DISEÑO<-gsub("[[:punct:]]","",datos$DISEÑO)
+#datos$BARRIO<-gsub("[[:punct:]]","",datos$BARRIO)
+datos$GRAVEDAD<-gsub("[[:punct:]]","",datos$GRAVEDAD)
+
+datos$AÑO <- gsub("[^0-9.-]", "", datos$AÑO)
+
+library(stringi) #QUITAR TILDES
+datos$COMUNA<-stri_trans_general(datos$COMUNA,"Latin-ASCII")
+datos$BARRIO<-stri_trans_general(datos$BARRIO,"Latin-ASCII")
+datos$DISEÑO<-stri_trans_general(datos$DISEÑO,"Latin-ASCII")
+datos$CLASE_ACCIDENTE<-stri_trans_general(datos$CLASE_ACCIDENTE,"Latin-ASCII")
+datos$CLASE_ACCIDENTE<-gsub(x = datos$CLASE_ACCIDENTE, 
+                            pattern = "caida de ocupante|caida ocupante",
+                            replacement = "caida ocupante")
+
+#TIPOS
+datos$FECHA_ACCIDENTE <- as.Date(datos$FECHA_ACCIDENTE, format = "%d/%m/%Y" )
+datos$CLASE_ACCIDENTE<-as.factor(datos$CLASE_ACCIDENTE)
+#datos$FECHA_ACCIDENTE <- as.POSIXct(datos$FECHA_ACCIDENTE, format = "%d/%m/%Y %H:%M:%S" )
+#patron<-c("xc1","xe1","xe9","xed","xf3","xfa","xf1","ñ")
+#reemplazo<- c("a","a","e","i","o","u","n","n")
+
+#COMUNAS
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "xc1",replacement = "a")
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "xe1",replacement = "a")
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "xe9",replacement = "e")
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "xed",replacement = "i")
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "xf3",replacement = "o")
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "xfa",replacement = "u")
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "xf1",replacement = "n")
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "ñ",replacement = "n")
+datos$DISEÑO<- stringr::str_replace(datos$DISEÑO, "xf3", "o")
+datos$GRAVEDAD<-gsub(x = datos$GRAVEDAD,pattern = "ñ",replacement = "n")
+datos$GRAVEDAD<-gsub(x = datos$GRAVEDAD,pattern = "xf1",replacement = "n")
+
+#BARRIOS
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "xc1",replacement = "a")
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "xe1",replacement = "a")
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "xe9",replacement = "e")
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "xed",replacement = "i")
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "xf3",replacement = "o")
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "xfa",replacement = "u")
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "xf1",replacement = "n")
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "ñ",replacement = "n")
+
+
+#Na por Columna
+apply(datos,2, function(x){sum(is.na(x))})
+d<-na.omit(datos)
+
+# CONTEO DE ACCIDENTES X DIA
+library(dplyr)
+#Numero de accidentes x barrio x dia
+df<-datos %>% 
+  group_by(MES,AÑO,FECHA_ACCIDENTE,BARRIO,
+           CLASE_ACCIDENTE,GRAVEDAD) %>% count()
+
+# DIAS FESTIVOS
+holidays_fecha<-readRDS(file = "Holidays.rds")
+holid <-data.frame("holi_bin"=rep(1,length(holidays_fecha)),holidays_fecha)
+df2 <- merge(df, holid, by.x = "FECHA_ACCIDENTE", 
+             by.y = "holidays_fecha",all.x = T)
+df2 <- df2 %>% mutate("holi_bin" = if_else(is.na(holi_bin), 0, holi_bin))
+
+# Save an object to a file
+#saveRDS(df2, file = "df.rds")
+# Restore the object
+#a<-readRDS(file = "datos.rds")
+
+
+
+#Base conteos
+
+saveRDS(modelo, "conteos.rds")
+#a<-readRDS(file = "bases_datos/conteos.rds")
+
+
+
+
+
+
+
+
+
