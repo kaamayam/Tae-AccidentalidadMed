@@ -41,7 +41,7 @@ test <- conteos  %>% filter(ano >= 2020)
 
 #modelo <- lm(n ~ ano + mes + dia_n + dia + holi_bin + CLASE_ACCIDENTE + BARRIO, data = conteos)
 #saveRDS(modelo, "modelo.rds")
-modelo <- readRDS("modelo.rds")
+modelo <- readRDS("modelo_glm.rds")
 
 # DIARIO ********************************************
 
@@ -66,7 +66,7 @@ prediccion_dia <- function(f1){
                         holi_bin=rep(holi_bin, each=length(BARRIOS)),
                         CLASE_ACCIDENTE = rep(CLASE_ACCIDENTE, each=length(BARRIOS)),
                         BARRIO=BARRIOS) #aqui deberian ir todos los barrios
-  new_dat$choque <- as.integer(predict(modelo, new_dat))
+  new_dat$choque <- as.integer(predict(modelo, new_dat,type = "response"))
   predicciones<-spread(new_dat, key = CLASE_ACCIDENTE, value = choque,fill = 0)
   predicciones<-predicciones %>% mutate("Total"=rowSums(predicciones[ , 7:12]))
   predicciones$escala<- ifelse(predicciones$Total<=3,"moderado","grave")
@@ -76,7 +76,7 @@ prediccion_dia <- function(f1){
   totalizados_med <-  apply(predicciones[,7:13], MARGIN = 2, sum)
   return(list(totalizados_med,predicciones))
 }
-prediccion_dia(f1)[2]
+prediccion_dia(f1)[[1]]
 
 #MAPA
 mapview(barrios_med, zcol=c("Total"))
