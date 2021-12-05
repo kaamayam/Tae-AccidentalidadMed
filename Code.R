@@ -18,12 +18,12 @@ conteos<- readRDS("bases_datos/conteos_con.rds")
 
 
 # Arreglando variables predictivas
-conteos$dia_n <-  as.integer(format(conteos$FECHA_ACCIDENTE, "%d"))
-conteos$dia <- as.factor(wday(conteos$FECHA_ACCIDENTE, label = TRUE))
-conteos$mes <- as.factor(format(conteos$FECHA_ACCIDENTE, "%b")) 
-conteos$ano <- as.integer(format(conteos$FECHA_ACCIDENTE, "%Y"))
-conteos$holi_bin <- ifelse(conteos$FECHA_ACCIDENTE %in% holidays_fecha$. , 1, 0) %>% factor()
-conteos$BARRIO<- as.factor(conteos$BARRIO)
+#conteos$dia_n <-  as.integer(format(conteos$FECHA_ACCIDENTE, "%d"))
+#conteos$dia <- as.factor(wday(conteos$FECHA_ACCIDENTE, label = TRUE))
+#conteos$mes <- as.factor(format(conteos$FECHA_ACCIDENTE, "%b")) 
+#conteos$ano <- as.integer(format(conteos$FECHA_ACCIDENTE, "%Y"))
+#conteos$holi_bin <- ifelse(conteos$FECHA_ACCIDENTE %in% holidays_fecha$. , 1, 0) %>% factor()
+#conteos$BARRIO<- as.factor(conteos$BARRIO)
 
 #saveRDS(conteos,"conteos_con.rds")
 
@@ -93,21 +93,33 @@ prediccion_semana <- function(f1, f2){
   for (i in secuencia) {
     mi_lista <- append(mi_lista, prediccion_dia(as.Date(i))[2])
   }
-  return(mi_lista)
+  a<-as.data.frame(bind_rows(mi_lista) %>%  group_by(BARRIO) %>% 
+                     summarise_at(vars("atropello", "caida ocupante","choque", 
+                                       "incendio","otro", "volcamiento"), sum))
+  return(a)
 }
 prediccion_semana(f1, f2)
 
 
+
+
 # Mensual ---- input: 01 or 02 .... or 12
-#ano <- 2014
-#mes <- 02
-prediccion_mes <- function(ano,mes, claseaccidente){
+
+prediccion_mes <- function(ano,mes){
   f1 <- as.Date(paste(ano, mes, 01, sep = "-")) %>%  as.Date()
   f2 <- bsts::LastDayInMonth(f1) %>%  as.Date()
   secuencia <- seq(f1, f2, 1)
-  return(sum(prediccion_dia(secuencia, claseaccidente)))
+  mi_lista <- list()
+  for (i in secuencia) {
+    mi_lista <- append(mi_lista, prediccion_dia(as.Date(i))[2])
+  }
+  a<-as.data.frame(bind_rows(mi_lista) %>%  group_by(BARRIO) %>% 
+                     summarise_at(vars("atropello", "caida ocupante","choque", 
+                                       "incendio","otro", "volcamiento"), sum))
+  return(a)
 }
-
+ano <- 2014 ; mes <- 02
+prediccion_mes(ano,mes)
 
 
 

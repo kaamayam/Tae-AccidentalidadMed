@@ -14,7 +14,7 @@ test <- conteos  %>% filter(ano >= 2020)
 #modelo <- lm(n ~ ano + mes + dia_n + dia + holi_bin + CLASE_ACCIDENTE+BARRIO, data = conteos)
 
 fit.1 <- glm (n ~ ano + mes + dia_n + dia + holi_bin + CLASE_ACCIDENTE + BARRIO, 
-              family=poisson(link = log),data = conteos)
+              family=poisson(link = log),data = train)
 summary(fit.1)
 
 predict.glm(object = fit.1, newdata = test, type = "response")
