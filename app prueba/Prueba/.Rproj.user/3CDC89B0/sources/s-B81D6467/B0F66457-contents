@@ -1,0 +1,323 @@
+#datos<- read.csv("incidentes_viales.csv", sep = ";",quote = "")
+datos<- readRDS(file = "bases_datos/df.rds")
+library(tidyverse)
+str(datos)
+table(datos$CLASE_ACCIDENTE)
+#table(datos$DISEÑO)
+table(datos$COMUNA)
+table(datos$AÑO)
+table(datos$BARRIO)
+table(datos$GRAVEDAD)
+
+datos[datos == '""""'] <- NA
+
+library(stringi) #QUITAR TILDES
+datos$COMUNA<-stri_trans_general(datos$COMUNA,"Latin-ASCII")
+datos$BARRIO<-stri_trans_general(datos$BARRIO,"Latin-ASCII")
+#datos$DISEÑO<-stri_trans_general(datos$DISEÑO,"Latin-ASCII")
+datos$CLASE_ACCIDENTE<-stri_trans_general(datos$CLASE_ACCIDENTE,"Latin-ASCII")
+datos$CLASE_ACCIDENTE<-gsub(x = datos$CLASE_ACCIDENTE, 
+                            pattern = "caida de ocupante|caida ocupante",
+                            replacement = "caida ocupante")
+#datos[c(16210,),"BARRIO"] <- 'area De Expansion Altavista'
+#MINUSCULA
+datos<-datos %>% mutate(COMUNA = tolower(datos$COMUNA))
+datos<-datos %>% mutate(BARRIO = tolower(datos$BARRIO))
+datos<-datos %>% mutate(GRAVEDAD = tolower(datos$GRAVEDAD))
+datos<-datos %>% mutate(CLASE_ACCIDENTE = tolower(datos$CLASE_ACCIDENTE))
+#datos<-datos %>% mutate(DISEÑO = tolower(datos$DISEÑO))
+#QUITAR SLASHS
+#datos[,c("COMUNA","BARRIO","DISEÑO")]<-gsub("[[:punct:]]","",datos[,c("COMUNA","BARRIO","DISEÑO")],)
+datos[,c("COMUNA","BARRIO")]<-gsub("[[:punct:]]","",datos[,c("COMUNA","BARRIO")],)
+
+#datos$DISEÑO<-gsub("[[:punct:]]","",datos$DISEÑO)
+#datos$BARRIO<-gsub("[[:punct:]]","",datos$BARRIO)
+datos$GRAVEDAD<-gsub("[[:punct:]]","",datos$GRAVEDAD)
+
+datos$AÑO <- gsub("[^0-9.-]", "", datos$AÑO)
+
+#TIPOS
+datos$FECHA_ACCIDENTE <- as.Date(datos$FECHA_ACCIDENTE, format = "%d/%m/%Y" )
+datos$CLASE_ACCIDENTE<-as.factor(datos$CLASE_ACCIDENTE)
+datos$GRAVEDAD_ACCIDENTE<-as.factor(datos$GRAVEDAD_ACCIDENTE)
+datos$holi_bin<-as.factor(datos$holi_bin)
+#datos$FECHA_ACCIDENTE <- as.POSIXct(datos$FECHA_ACCIDENTE, format = "%d/%m/%Y %H:%M:%S" )
+#patron<-c("xc1","xe1","xe9","xed","xf3","xfa","xf1","ñ")
+#reemplazo<- c("a","a","e","i","o","u","n","n")
+
+#COMUNAS
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "xc1",replacement = "a")
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "xe1",replacement = "a")
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "xe9",replacement = "e")
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "xed",replacement = "i")
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "xf3",replacement = "o")
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "xfa",replacement = "u")
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "xf1",replacement = "n")
+datos$COMUNA<-gsub(x = datos$COMUNA,pattern = "ñ",replacement = "n")
+datos$DISEÑO<- stringr::str_replace(datos$DISEÑO, "xf3", "o")
+datos$GRAVEDAD<-gsub(x = datos$GRAVEDAD,pattern = "ñ",replacement = "n")
+datos$GRAVEDAD<-gsub(x = datos$GRAVEDAD,pattern = "xf1",replacement = "n")
+
+#BARRIOS
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "xc1",replacement = "a")
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "xe1",replacement = "a")
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "xe9",replacement = "e")
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "xed",replacement = "i")
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "xf3",replacement = "o")
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "xfa",replacement = "u")
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "xf1",replacement = "n")
+datos$BARRIO<-gsub(x = datos$BARRIO,pattern = "ñ",replacement = "n")
+
+
+#Na por Columna
+apply(datos,2, function(x){sum(is.na(x))})
+d<-na.omit(datos)
+
+# CONTEO DE ACCIDENTES X DIA
+library(dplyr)
+#Numero de accidentes x barrio x dia
+df<-datos %>% 
+  group_by(MES,AÑO,FECHA_ACCIDENTE,BARRIO,
+           CLASE_ACCIDENTE,GRAVEDAD) %>% count()
+
+# DIAS FESTIVOS
+holidays_fecha<-as.data.frame(readRDS(file = "bases_datos/Holidays.rds"))
+colnames(holidays_fecha)<-"holidays_fecha"
+holid <-data.frame("holi_bin"=rep(1,length(holidays_fecha)),holidays_fecha)
+df2 <- merge(df, holid, by.x = "FECHA_ACCIDENTE", 
+             by.y = "holidays_fecha",all.x = T)
+df2 <- df2 %>% mutate("holi_bin" = if_else(is.na(holi_bin), 0, holi_bin))
+
+
+##Ferias de las flores
+fecha=c("2014-08-01" ,"2014-08-02" ,"2014-08-03" ,"2014-08-04", "2014-08-05", "2014-08-06", "2014-08-07", "2014-08-08", "2014-08-09", "2014-08-10", "2015-07-31","2015-08-01",
+        "2015-08-01", "2015-08-02", "2015-08-03" ,"2015-08-04", "2015-08-05",  "2015-08-06", "2015-08-07", "2015-08-08", "2015-08-09", "2016-07-29", "2016-07-30", "2016-07-31", "2016-08-01", "2016-08-02", "2016-08-03", "2016-08-04", "2016-08-05", "2016-08-06", "2016-08-07", 
+        "2017-07-28", "2017-07-29", "2017-07-30", "2017-07-31", "2017-08-01", "2017-08-02", "2017-08-03", "2017-08-04", "2017-08-05", "2017-08-06",
+        "2018-08-03", "2018-08-04", "2018-08-05", "2018-08-06", "2018-08-07", "2018-08-08", "2018-08-09", "2018-08-10", "2018-08-11", "2018-08-12",
+        "2019-08-02", "2019-08-03", "2019-08-04", "2019-08-05", "2019-08-06", "2019-08-07", "2019-08-08", "2019-08-09", "2019-08-10", "2019-08-11", "2014-01-01", "2014-01-06", "2014-03-19", "2014-04-13", "2014-04-17", "2014-04-18", "2014-04-20", "2014-05-01", "2014-05-11", "2014-05-29" ,"2014-06-15",
+        "2014-06-19", "2014-06-27", "2014-06-29", "2014-07-20", "2014-08-07", "2014-08-15", "2014-10-13", "2014-10-31", "2014-11-01", "2014-11-11", "2014-12-08",
+        "2014-12-24", "2014-12-25", "2014-12-31", "2015-01-01", "2015-01-06", "2015-03-19", "2015-03-29", "2015-04-02", "2015-04-03", "2015-04-05", "2015-05-01",
+        "2015-05-10", "2015-05-14", "2015-06-04", "2015-06-12", "2015-06-21", "2015-06-29", "2015-07-20", "2015-08-07", "2015-08-15", "2015-10-12", "2015-10-31",
+        "2015-11-01", "2015-11-11", "2015-12-08", "2015-12-24", "2015-12-25", "2015-12-31", "2016-01-01", "2016-01-06", "2016-03-19", "2016-03-20", "2016-03-24",
+        "2016-03-25", "2016-03-27", "2016-05-01", "2016-05-05", "2016-05-08","2016-05-26", "2016-06-03", "2016-06-19", "2016-06-29", "2016-07-20", "2016-08-07",
+        "2016-08-15", "2016-10-10", "2016-10-31", "2016-11-01", "2016-11-11", "2016-12-08", "2016-12-24", "2016-12-25","2016-12-31", "2017-01-01", "2017-01-06",
+        "2017-03-19", "2017-04-09", "2017-04-13", "2017-04-14", "2017-04-16","2017-05-01", "2017-05-14","2017-05-25", "2017-06-15", "2017-06-18", "2017-06-23",       
+        "2017-06-29", "2017-07-20", "2017-08-07", "2017-08-15", "2017-10-09","2017-10-31", "2017-11-01", "2017-11-11", "2017-12-08", "2017-12-24", "2017-12-25",
+        "2017-12-31", "2018-01-01", "2018-01-06", "2018-03-19", "2018-03-25", "2018-03-29", "2018-03-30","2018-04-01", "2018-05-01", "2018-05-10", "2018-05-13",
+        "2018-05-31", "2018-06-08", "2018-06-17" ,"2018-06-29", "2018-07-20", "2018-08-07", "2018-08-15", "2018-10-08", "2018-10-31", "2018-11-01", "2018-11-11",
+        "2018-12-08", "2018-12-24", "2018-12-25", "2018-12-31", "2019-01-01", "2019-01-06", "2019-03-19","2019-04-14", "2019-04-18", "2019-04-19", "2019-04-21",
+        "2019-05-01", "2019-05-12", "2019-05-30" ,"2019-06-16", "2019-06-20", "2019-06-28", "2019-06-29","2019-07-20", "2019-08-07", "2019-08-15" ,"2019-10-14",
+        "2019-10-31", "2019-11-01", "2019-11-11", "2019-12-08", "2019-12-24","2019-12-25", "2019-12-31", "2020-01-01" ,"2020-01-06", "2020-03-19", "2020-04-05",
+        "2020-04-09", "2020-04-10", "2020-04-12", "2020-05-01", "2020-05-10", "2020-05-21", "2020-06-11", "2020-06-19", "2020-06-21", "2020-06-29", "2020-07-20",
+        "2020-08-07", "2020-08-15", "2020-10-12", "2020-10-31", "2020-11-01", "2020-11-11", "2020-12-08", "2020-12-24", "2020-12-25", "2020-12-31", "2021-01-01",
+        "2021-01-06", "2021-03-19", "2021-03-28", "2021-04-01", "2021-04-02", "2021-04-04", "2021-05-01", "2021-05-09", "2021-05-13", "2021-06-03", "2021-06-11",
+        "2021-06-20","2021-06-29", "2021-07-20", "2021-08-07", "2021-08-15", "2021-10-11", "2021-10-31", "2021-11-01", "2021-11-11", "2021-12-08", "2021-12-24",
+        "2021-12-25", "2021-12-31")
+#fecha<- as.data.frame(fecha, format = "%Y-%m-%d")
+
+
+a<-as.data.frame(c(holidays_fecha$holidays_fecha,fecha))
+colnames(a)<- "holidays_fecha"
+a<- unique(a)
+
+# Save an object to a file
+saveRDS(a, file = "holidays_fecha22.rds")
+
+# Restore the object
+#a<-readRDS(file = "datos.rds")
+#Base conteos
+
+saveRDS(modelo, "conteos.rds")
+#a<-readRDS(file = "bases_datos/conteos.rds")
+
+
+#============================MINERIA 2========================================
+
+library(ggplot2)
+library(tidyverse)
+library(lubridate)
+library(bsts)
+
+
+datos<- readRDS(file = "bases_datos/datos.rds")
+holidays_fecha<-readRDS(file = "bases_datos/Holidays.rds") %>% data.frame()
+
+#sin clase accidente
+#conteos1 <- datos %>% group_by(FECHA_ACCIDENTE,BARRIO, COMUNA= as.factor(COMUNA)) %>%
+#  count() %>% data.frame()
+saveRDS(conteos,"conteos_sin.rds")
+conteos<-readRDS("bases_datos/conteos_sin.rds")
+
+#con clase de accidente
+conteos2 <- datos %>% group_by(FECHA_ACCIDENTE, CLASE_ACCIDENTE=as.factor(CLASE_ACCIDENTE),
+                               BARRIO, COMUNA= as.factor(COMUNA)) %>%
+  count() %>% data.frame()
+saveRDS(conteos2,"conteos_con.rds")
+conteos<-readRDS("bases_datos/conteos_con.rds")
+
+# Arreglando variables predictivas
+conteos$dia_n <-  as.integer(format(conteos$FECHA_ACCIDENTE, "%d"))
+conteos$dia <- as.factor(wday(conteos$FECHA_ACCIDENTE, label = TRUE))
+conteos$mes <- as.factor(format(conteos$FECHA_ACCIDENTE, "%b")) 
+conteos$ano <- as.integer(format(conteos$FECHA_ACCIDENTE, "%Y"))
+conteos$holi_bin <- ifelse(conteos$FECHA_ACCIDENTE %in% holidays_fecha$holidays_fecha , 1, 0) %>% factor()
+conteos$BARRIO<- as.factor(conteos$BARRIO)
+
+saveRDS(conteos,"conteos_con.rds")
+
+# particion de la base de datos
+train <- conteos %>% filter(ano <= 2017)
+validation <- conteos %>% filter(ano >= 2018 && ano <= 2019)
+test <- conteos  %>% filter(ano >= 2020)
+
+levels(train$CLASE_ACCIDENTE)
+str(train)
+
+
+
+#### modelo de prueba *************************************************************
+
+modelo <- lm(n ~ ano + mes + dia_n + dia + holi_bin + CLASE_ACCIDENTE+BARRIO, data = train)
+saveRDS(modelo, "modelo.rds")
+
+
+
+# Diario ----- input: 2014-03-25  (ano, mes, dia)
+prediccion_dia <- function(f1, claseaccidente){
+  f1 <- as.Date(f1)
+  dia_n <-  as.integer(format(f1, "%d"))
+  dia <- as.factor(wday(f1, label = TRUE))
+  mes <- as.factor(format(f1, "%b")) 
+  ano <- as.integer(format(f1, "%Y"))
+  holi_bin <- ifelse(f1 %in% holidays_fecha$. , 1, 0) %>% factor()
+  BARRIO <- conte
+  new_dat <- data.frame(dia_n, dia, mes, ano, holi_bin, 
+                        CLASE_ACCIDENTE = claseaccidente,BARRIO)
+  return(predict(modelo, new_dat, type="response") %>% as.integer())
+}
+
+
+# Semanal ----input: f1=2014-03-25, f2 = 2014-04-03
+prediccion_semana <- function(f1, f2, claseaccidente){
+  f1 <- f1 %>% as.Date()
+  f2 <- f2 %>% as.Date()
+  secuencia <- seq(f1, f2, 1)
+  return(sum(prediccion_dia(secuencia, claseaccidente)))
+}
+
+
+
+# Mensual ---- input: 01 or 02 .... or 12
+#ano <- 2014
+#mes <- 02
+prediccion_mes <- function(ano,mes, claseaccidente){
+  f1 <- as.Date(paste(ano, mes, 01, sep = "-")) %>%  as.Date()
+  f2 <- bsts::LastDayInMonth(f1) %>%  as.Date()
+  secuencia <- seq(f1, f2, 1)
+  return(sum(prediccion_dia(secuencia, claseaccidente)))
+}
+
+
+#ggplot(data=conteos,mapping = aes(x = FECHA_ACCIDENTE , y = n)) +
+#  geom_point(aes(color = CLASE_ACCIDENTE)) + facet_grid(CLASE_ACCIDENTE~.)
+# se observa que las variciones en los conteos de accidentes por tipo de accidente 
+# son constantes a exepcion del ano 2020 donde los conteos bajaron
+
+#ggplot(data=conteos,mapping = aes(x = FECHA_ACCIDENTE , y = n)) +
+#  geom_point(aes(color = CLASE_ACCIDENTE))
+
+
+#==============================Mineria 3======================================
+
+barrios_num<- c("1001","1003","1004","1007","1008","1011","1012","1015",
+           "1018","1019","1020","103","105","109","1101","1102","1103",
+           "1105","1108","1114","1202","1204","1205","1206","1211",
+           "1306","1408","1419","1422","1423","1503","1504","1507",
+           "1510","1511","1603","1605","1611","1612","1613","1620",
+           "202","205","208","211","301","302","303","304","306","307",
+           "309","310","312","402","408","409","413","5002","505","509",
+           "514","606","7002","711","712","716","717","803","809","811",
+           "813","815","819","903","906","907","912","914","1001",
+           "1003","1004","1007","1008","1011",
+           "1012","1015","1018","1019","1020","103","105","109","1101",
+           "1102","1103","1105","1108","1114","1202",
+           "1204","1205","1206","1211","1306","1408","1419","1422","1423",
+           "1503","1504","1507","1510","1511","1603","1605","1611","1612",
+           "1613","1620","202","205","208","211","301","302","303","304",
+           "306","307","309","310","312","402","408","409","413","5002",
+           "505","509","514","606","7001","7002","711","712","716","717",
+           "803","809","811","813","815","819","9004","903","906",
+           "907","912","914")
+nuevos<-unique(barrios_num)
+
+
+nuevos<- c("boqueron","el astillero","san jose del manzanillo",
+"santa elena sector central","suburb el plan",
+"suburbano aguas frias","suburbano la cuchilla",
+"suburbano la palma-el patio","suburbano piedra gorda",
+"volcana guayabal","antioquia","boqueron","el astillero","el llano se",
+"el plan","el uvito","palmitas sector central",
+"san jose del manzanillo","santa elena sector central",
+"suburb el plan","suburbano aguas frias","suburbano la cuchilla",
+"suburbano la palma-el patio","suburbano piedra gorda",
+"volcana guayabal","yarumalito")
+
+nuevos<-unique(nuevos)
+
+conteos$BARRIO<- gsub("suburbano ","",conteos$BARRIO)
+conteos$BARRIO<- gsub("suburb ","",conteos$BARRIO)
+conteos$BARRIO<- gsub("-el patio","",conteos$BARRIO)
+conteos<-conteos %>% filter(!(conteos$BARRIO %in% barrios_num))
+saveRDS(conteos,"conteos_con.rds")
+
+
+
+train[118950,]<-c("2014-07-04","otro", "boqueron",
+                  "corregimiento de san cristobal", 0 ,4,"Fri","Jul",2014,0)
+train[118951,]<-c("2014-07-04","otro", "san jose del manzanillo",
+                  "corregimiento de altavista", 0 ,4,"Fri","Jul",2014,0)
+train[118952,]<-c("2014-07-04","otro", "el plan",
+                  "corregimiento de santa elena", 0 ,4,"Fri","Jul",2014,0)
+train[118953,]<-c("2014-07-04","otro", "la cuchilla",
+                  "corregimiento de san cristobal", 0 ,4,"Fri","Jul",2014,0)
+train[118954,]<-c("2014-07-04","otro", "piedra gorda",
+                  "corregimiento de santa elena", 0 ,4,"Fri","Jul",2014,0)
+train[118955,]<-c("2014-07-04","otro", "palmitas sector central",
+                  "corregimiento de san sebastian de palmitas", 0 ,4,"Fri","Jul",2014,0)
+train[118956,]<-c("2014-07-04","otro", "el astillero",
+                  "corregimiento de san antonio de prado", 0 ,4,"Fri","Jul",2014,0)
+train[118957,]<-c("2014-07-04","otro", "santa elena sector central",
+                  "corregimiento de santa elena", 0 ,4,"Fri","Jul",2014,0)
+train[118958,]<-c("2014-07-04","otro", "aguas frias",
+                  "corregimiento de altavista", 0 ,4,"Fri","Jul",2014,0)
+train[118959,]<-c("2014-07-04","otro", "la palma",
+                  "belen", 0 ,4,"Fri","Jul",2014,0)
+train[118960,]<-c("2014-07-04","otro", "volcana guayabal",
+                  "corregimiento de san sebastian de palmitas", 0 ,4,"Fri","Jul",2014,0)
+train[118961,]<-c("2014-07-04","otro", "el llano se",
+                  "corregimiento de santa elena", 0 ,4,"Fri","Jul",2014,0)
+train[118962,]<-c("2014-07-04","otro", "el uvito",
+                  "corregimiento de san cristobal", 0 ,4,"Fri","Jul",2014,0)
+train[118963,]<-c("2014-07-04","otro", "antioquia",
+                  "aranjuez", 0 ,4,"Fri","Jul",2014,0)
+train[118964,]<-c("2014-07-04","otro", "yarumalito",
+                  "corregimiento de san antonio de prado", 0 ,4,"Fri","Jul",2014,0)
+
+
+
+train$FECHA_ACCIDENTE <- as.Date(train$FECHA_ACCIDENTE, format = "%d/%m/%Y" )
+train$n<-as.factor(train$n)
+train$ano<-as.numeric(train$ano)
+train$holi_bin<-as.factor(train$holi_bin)
+train$dia_n<- as.numeric(train$dia_n)
+train$n<- as.numeric(train$n)
+str(train)
+str(conteos)
+
+saveRDS(train, "train.rds")
+saveRDS(conteos, "conteos_con.rds")
+nombres_barrios<- unique(conteos$BARRIO)
+saveRDS(nombres_barrios,'bases_datos/nombres_barrios.rds')
+BARRIOS <- readRDS('bases_datos/nombres_barrios.rds')
+
+

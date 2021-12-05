@@ -54,7 +54,7 @@ prediccion_dia <- function(f1){
   dia <- as.factor(wday(f1, label = TRUE))
   mes <- as.factor(format(f1, "%b")) 
   ano <- as.integer(format(f1, "%Y"))
-  holi_bin <- ifelse(f1 %in% holidays_fecha$. , 1, 0) %>% factor()
+  holi_bin <- ifelse(f1 %in% holidays_fecha$holidays_fecha , 1, 0) %>% factor()
   BARRIOS <- readRDS('bases_datos/nombres_barrios.rds')
   CLASE_ACCIDENTE <- c('volcamiento','otro',
                        'atropello','choque',
@@ -93,21 +93,46 @@ prediccion_semana <- function(f1, f2){
   for (i in secuencia) {
     mi_lista <- append(mi_lista, prediccion_dia(as.Date(i))[2])
   }
-  return(mi_lista)
+  predicciones<-as.data.frame(bind_rows(mi_lista) %>%  group_by(BARRIO) %>% 
+                     summarise_at(vars("atropello", "caida ocupante","choque", 
+                                       "incendio","otro", "volcamiento"), sum))
+  predicciones<-predicciones %>% mutate("Total"=rowSums(predicciones[ , 2:7]))
+  predicciones$escala<- ifelse(predicciones$Total<=3,"moderado","grave")
+  #necesitamos 332 datos de barrios
+  dia1<-left_join(barrios_med@data, predicciones, by= c("NOMBRE" = "BARRIO"))
+  barrios_med@data<- dia1
+  totalizados_med <-  apply(predicciones[,2:7], MARGIN = 2, sum)
+  return(list(totalizados_med,predicciones))
 }
 prediccion_semana(f1, f2)
 
 
+
+
 # Mensual ---- input: 01 or 02 .... or 12
-#ano <- 2014
-#mes <- 02
-prediccion_mes <- function(ano,mes, claseaccidente){
+
+
+prediccion_mes <- function(ano,mes){
   f1 <- as.Date(paste(ano, mes, 01, sep = "-")) %>%  as.Date()
   f2 <- bsts::LastDayInMonth(f1) %>%  as.Date()
   secuencia <- seq(f1, f2, 1)
-  return(sum(prediccion_dia(secuencia, claseaccidente)))
+  mi_lista <- list()
+  for (i in secuencia) {
+    mi_lista <- append(mi_lista, prediccion_dia(as.Date(i))[2])
+  }
+  predicciones<-as.data.frame(bind_rows(mi_lista) %>%  group_by(BARRIO) %>% 
+                     summarise_at(vars("atropello", "caida ocupante","choque", 
+                                       "incendio","otro", "volcamiento"), sum))
+  predicciones<-predicciones %>% mutate("Total"=rowSums(predicciones[ , 2:7]))
+  predicciones$escala<- ifelse(predicciones$Total<=3,"moderado","grave")
+  #necesitamos 332 datos de barrios
+  dia1<-left_join(barrios_med@data, predicciones, by= c("NOMBRE" = "BARRIO"))
+  barrios_med@data<- dia1
+  totalizados_med <-  apply(predicciones[,2:7], MARGIN = 2, sum)
+  return(list(totalizados_med,predicciones))
 }
-
+ano <- 2014 ; mes <- 02
+prediccion_mes(ano,mes)
 
 
 
