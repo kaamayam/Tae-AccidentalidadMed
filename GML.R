@@ -26,7 +26,7 @@ sqrt(mean(y_est^2))#RMSE
 
 
 # Test (--ERROR---)
-y_est <- predict.glm(object = fit.1, newdata = validation[,-5], type = "response")
+y_est <- predict.glm(object = fit.1, newdata = test[,-5], type = "response")
 #MSE
 mean((test$n - y_est)^2) 
 

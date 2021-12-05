@@ -15,8 +15,9 @@ conteos<- readRDS("bases_datos/conteos_sin.rds")
 #conteos<- readRDS("bases_datos/conteos_con.rds")
 
 # particion de la base de datos
-train <- conteos %>% filter(ano <= 2017)
-validation <- conteos %>% filter(ano >= 2018 && ano <= 2019)
+#train <- conteos %>% filter(ano <= 2017)
+train <- readRDS("bases_datos/train.rds")
+validation <- conteos %>% filter(ano >= 2018 | ano <= 2019)
 test <- conteos  %>% filter(ano >= 2020)
 
 
