@@ -12,25 +12,24 @@ library(ggplot2)
 library(tidyverse)
 library(lubridate)
 library(bsts)
+library(mapview)
+library(leaflet)
 
 # bases de datos
 datos<- readRDS(file = "datos.rds")
 holidays_fecha<-readRDS(file = "Holidays.rds") %>% data.frame()
-
-
-conteos <- datos %>% group_by(FECHA_ACCIDENTE, CLASE_ACCIDENTE=as.factor(CLASE_ACCIDENTE)) %>%
-    count() %>% data.frame()
-
+barrios_med <- readRDS("barrios_Medellin.rds") # Objeto espacial
+conteos<- readRDS("conteos_con.rds")
+#mapview(barrios_med)
 
 
 
 # Define UI for application that draws a histogram ********************
 ui <- fluidPage(
-
+    
     # Application title
     titlePanel("Accidentes por tipo"),
-
-   
+    
     sidebarLayout(
         sidebarPanel(
             
@@ -59,9 +58,11 @@ ui <- fluidPage(
 
         # panel del grafico
         mainPanel(
-           plotOutput("mi_grafico_1")
+           plotOutput("mi_grafico_1"),
+           leafletOutput("mi_grafico_2"),
+           #mapview:::plainViewOutput("mapplot")
+           
         )
-        
         
         
         
@@ -77,6 +78,12 @@ server <- function(input, output) { #******************************************
         ggplot(data = conteos[conteos$CLASE_ACCIDENTE==input$selector,], aes(x = FECHA_ACCIDENTE, y =n)) + geom_point(alpha = 1/2) +
             geom_smooth(method = lm, col="blue")
         
+    })
+    
+    
+    m<-mapview(barrios_med)
+    output$mi_grafico_2 <- renderLeaflet({
+        m@map
     })
 }
 

@@ -18,12 +18,12 @@ conteos<- readRDS("bases_datos/conteos_con.rds")
 
 
 # Arreglando variables predictivas
-#conteos$dia_n <-  as.integer(format(conteos$FECHA_ACCIDENTE, "%d"))
-#conteos$dia <- as.factor(wday(conteos$FECHA_ACCIDENTE, label = TRUE))
-#conteos$mes <- as.factor(format(conteos$FECHA_ACCIDENTE, "%b")) 
-#conteos$ano <- as.integer(format(conteos$FECHA_ACCIDENTE, "%Y"))
-#conteos$holi_bin <- ifelse(conteos$FECHA_ACCIDENTE %in% holidays_fecha$. , 1, 0) %>% factor()
-#conteos$BARRIO<- as.factor(conteos$BARRIO)
+conteos$dia_n <-  as.integer(format(conteos$FECHA_ACCIDENTE, "%d"))
+conteos$dia <- as.factor(wday(conteos$FECHA_ACCIDENTE, label = TRUE))
+conteos$mes <- as.factor(format(conteos$FECHA_ACCIDENTE, "%b")) 
+conteos$ano <- as.integer(format(conteos$FECHA_ACCIDENTE, "%Y"))
+conteos$holi_bin <- ifelse(conteos$FECHA_ACCIDENTE %in% holidays_fecha$. , 1, 0) %>% factor()
+conteos$BARRIO<- as.factor(conteos$BARRIO)
 
 #saveRDS(conteos,"conteos_con.rds")
 
@@ -54,7 +54,7 @@ prediccion_dia <- function(f1){
   dia <- as.factor(wday(f1, label = TRUE))
   mes <- as.factor(format(f1, "%b")) 
   ano <- as.integer(format(f1, "%Y"))
-  holi_bin <- ifelse(f1 %in% holidays_fecha$. , 1, 0) %>% factor()
+  holi_bin <- ifelse(f1 %in% holidays_fecha$holidays_fecha , 1, 0) %>% factor()
   BARRIOS <- readRDS('bases_datos/nombres_barrios.rds')
   CLASE_ACCIDENTE <- c('volcamiento','otro',
                        'atropello','choque',

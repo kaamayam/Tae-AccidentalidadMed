@@ -3,7 +3,7 @@
     "path": "/Volumes/GoogleDrive/Shared drives/National university of Colombia/TAE/TAE_archivos/Tarea1_tae/mineria_tarea1.R",
     "project_path": null,
     "type": "r_source",
-    "hash": "1194477907",
+    "hash": "1744775784",
     "contents": "",
     "dirty": false,
     "created": 1638442984646.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "16,0",
-        "scrollLine": "7"
+        "cursorPosition": "3,0",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1638449037,
+    "lastKnownWriteTime": 1638665960,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1638449038000,
+    "last_content_update": 1638665960,
     "read_only": false,
     "read_only_alternatives": []
 }
