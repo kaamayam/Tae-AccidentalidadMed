@@ -73,7 +73,7 @@ prediccion_semana <- function(f1, f2){
                                 summarise_at(vars("atropello", "caida ocupante","choque", 
                                                   "incendio","otro", "volcamiento"), sum))
   predicciones<-predicciones %>% mutate("Total"=rowSums(predicciones[ , 2:7]))
-  predicciones$escala<- ifelse(predicciones$Total<=3,"moderado","grave")
+  predicciones$escala<- ifelse(predicciones$Total<=300,"moderado","grave")
   #necesitamos 332 datos de barrios
   dia1<-left_join(barrios_med@data, predicciones, by= c("NOMBRE" = "BARRIO"))
   barrios_med@data<- dia1
@@ -82,7 +82,8 @@ prediccion_semana <- function(f1, f2){
 }
 prediccion_semana(f1, f2)
 
-
+mapview(barrios_med, zcol=c("Total"))
+mapview(barrios_med, zcol=c("escala"))
 
 
 # Mensual ---- input: 01 or 02 .... or 12
@@ -100,7 +101,7 @@ prediccion_mes <- function(ano,mes){
                                 summarise_at(vars("atropello", "caida ocupante","choque", 
                                                   "incendio","otro", "volcamiento"), sum))
   predicciones<-predicciones %>% mutate("Total"=rowSums(predicciones[ , 2:7]))
-  predicciones$escala<- ifelse(predicciones$Total<=3,"moderado","grave")
+  predicciones$escala<- ifelse(predicciones$Total<=300,"moderado","grave")
   #necesitamos 332 datos de barrios
   dia1<-left_join(barrios_med@data, predicciones, by= c("NOMBRE" = "BARRIO"))
   barrios_med@data<- dia1
