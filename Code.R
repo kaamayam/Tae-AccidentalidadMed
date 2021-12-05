@@ -93,10 +93,16 @@ prediccion_semana <- function(f1, f2){
   for (i in secuencia) {
     mi_lista <- append(mi_lista, prediccion_dia(as.Date(i))[2])
   }
-  a<-as.data.frame(bind_rows(mi_lista) %>%  group_by(BARRIO) %>% 
+  predicciones<-as.data.frame(bind_rows(mi_lista) %>%  group_by(BARRIO) %>% 
                      summarise_at(vars("atropello", "caida ocupante","choque", 
                                        "incendio","otro", "volcamiento"), sum))
-  return(a)
+  predicciones<-predicciones %>% mutate("Total"=rowSums(predicciones[ , 2:7]))
+  predicciones$escala<- ifelse(predicciones$Total<=3,"moderado","grave")
+  #necesitamos 332 datos de barrios
+  dia1<-left_join(barrios_med@data, predicciones, by= c("NOMBRE" = "BARRIO"))
+  barrios_med@data<- dia1
+  totalizados_med <-  apply(predicciones[,2:7], MARGIN = 2, sum)
+  return(list(totalizados_med,predicciones))
 }
 prediccion_semana(f1, f2)
 
@@ -104,6 +110,7 @@ prediccion_semana(f1, f2)
 
 
 # Mensual ---- input: 01 or 02 .... or 12
+
 
 prediccion_mes <- function(ano,mes){
   f1 <- as.Date(paste(ano, mes, 01, sep = "-")) %>%  as.Date()
@@ -113,10 +120,16 @@ prediccion_mes <- function(ano,mes){
   for (i in secuencia) {
     mi_lista <- append(mi_lista, prediccion_dia(as.Date(i))[2])
   }
-  a<-as.data.frame(bind_rows(mi_lista) %>%  group_by(BARRIO) %>% 
+  predicciones<-as.data.frame(bind_rows(mi_lista) %>%  group_by(BARRIO) %>% 
                      summarise_at(vars("atropello", "caida ocupante","choque", 
                                        "incendio","otro", "volcamiento"), sum))
-  return(a)
+  predicciones<-predicciones %>% mutate("Total"=rowSums(predicciones[ , 2:7]))
+  predicciones$escala<- ifelse(predicciones$Total<=3,"moderado","grave")
+  #necesitamos 332 datos de barrios
+  dia1<-left_join(barrios_med@data, predicciones, by= c("NOMBRE" = "BARRIO"))
+  barrios_med@data<- dia1
+  totalizados_med <-  apply(predicciones[,2:7], MARGIN = 2, sum)
+  return(list(totalizados_med,predicciones))
 }
 ano <- 2014 ; mes <- 02
 prediccion_mes(ano,mes)

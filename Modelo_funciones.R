@@ -5,7 +5,7 @@ library(bsts)
 
 
 # Cargando el modelo -------
-modelo <- readRDS("modelo.rds")
+modelo <- readRDS("modelo_glm.rds")
 
 # datos
 datos<- read.csv("incidentes_viales.csv", sep = ";",quote = "")
@@ -21,6 +21,9 @@ validation <- conteos %>% filter(ano >= 2018 | ano <= 2019)
 test <- conteos  %>% filter(ano >= 2020)
 
 
+f1 <- as.Date('2014-03-25')
+
+# Diario ----- input: 2014-03-25  (ano, mes, dia)
 prediccion_dia <- function(f1){
   f1 <- as.Date(f1)
   dia_n <-  as.integer(format(f1, "%d"))
@@ -66,10 +69,16 @@ prediccion_semana <- function(f1, f2){
   for (i in secuencia) {
     mi_lista <- append(mi_lista, prediccion_dia(as.Date(i))[2])
   }
-  a<-as.data.frame(bind_rows(mi_lista) %>%  group_by(BARRIO) %>% 
-                     summarise_at(vars("atropello", "caida ocupante","choque", 
-                                       "incendio","otro", "volcamiento"), sum))
-  return(a)
+  predicciones<-as.data.frame(bind_rows(mi_lista) %>%  group_by(BARRIO) %>% 
+                                summarise_at(vars("atropello", "caida ocupante","choque", 
+                                                  "incendio","otro", "volcamiento"), sum))
+  predicciones<-predicciones %>% mutate("Total"=rowSums(predicciones[ , 2:7]))
+  predicciones$escala<- ifelse(predicciones$Total<=3,"moderado","grave")
+  #necesitamos 332 datos de barrios
+  dia1<-left_join(barrios_med@data, predicciones, by= c("NOMBRE" = "BARRIO"))
+  barrios_med@data<- dia1
+  totalizados_med <-  apply(predicciones[,2:7], MARGIN = 2, sum)
+  return(list(totalizados_med,predicciones))
 }
 prediccion_semana(f1, f2)
 
@@ -77,6 +86,7 @@ prediccion_semana(f1, f2)
 
 
 # Mensual ---- input: 01 or 02 .... or 12
+
 
 prediccion_mes <- function(ano,mes){
   f1 <- as.Date(paste(ano, mes, 01, sep = "-")) %>%  as.Date()
@@ -86,10 +96,16 @@ prediccion_mes <- function(ano,mes){
   for (i in secuencia) {
     mi_lista <- append(mi_lista, prediccion_dia(as.Date(i))[2])
   }
-  a<-as.data.frame(bind_rows(mi_lista) %>%  group_by(BARRIO) %>% 
-                     summarise_at(vars("atropello", "caida ocupante","choque", 
-                                       "incendio","otro", "volcamiento"), sum))
-  return(a)
+  predicciones<-as.data.frame(bind_rows(mi_lista) %>%  group_by(BARRIO) %>% 
+                                summarise_at(vars("atropello", "caida ocupante","choque", 
+                                                  "incendio","otro", "volcamiento"), sum))
+  predicciones<-predicciones %>% mutate("Total"=rowSums(predicciones[ , 2:7]))
+  predicciones$escala<- ifelse(predicciones$Total<=3,"moderado","grave")
+  #necesitamos 332 datos de barrios
+  dia1<-left_join(barrios_med@data, predicciones, by= c("NOMBRE" = "BARRIO"))
+  barrios_med@data<- dia1
+  totalizados_med <-  apply(predicciones[,2:7], MARGIN = 2, sum)
+  return(list(totalizados_med,predicciones))
 }
 ano <- 2014 ; mes <- 02
 prediccion_mes(ano,mes)
