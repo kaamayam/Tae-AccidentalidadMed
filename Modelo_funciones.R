@@ -8,11 +8,11 @@ library(bsts)
 modelo <- readRDS("modelo_glm.rds")
 
 # datos
-datos<- read.csv("incidentes_viales.csv", sep = ";",quote = "")
+#datos<- read.csv("incidentes_viales.csv", sep = ";",quote = "")
 holidays_fecha <- readRDS("bases_datos/Holidays.rds")%>% as.data.frame()
-barrios_med=readRDS("bases_datos/barrios_Medellin.rds")
-conteos<- readRDS("bases_datos/conteos_sin.rds")
-#conteos<- readRDS("bases_datos/conteos_con.rds")
+#barrios_med=readRDS("bases_datos/barrios_Medellin.rds")
+#conteos<- readRDS("bases_datos/conteos_sin.rds")
+conteos<- readRDS("bases_datos/conteos_con.rds")
 
 # particion de la base de datos
 #train <- conteos %>% filter(ano <= 2017)
@@ -26,6 +26,7 @@ f1 <- as.Date('2014-03-25')
 # Diario ----- input: 2014-03-25  (ano, mes, dia)
 prediccion_dia <- function(f1){
   f1 <- as.Date(f1)
+  barrios_med=readRDS("bases_datos/barrios_Medellin.rds")
   dia_n <-  as.integer(format(f1, "%d"))
   dia <- as.factor(wday(f1, label = TRUE))
   mes <- as.factor(format(f1, "%b")) 
@@ -50,21 +51,19 @@ prediccion_dia <- function(f1){
   dia1<-left_join(barrios_med@data, predicciones, by= c("NOMBRE" = "BARRIO"))
   barrios_med@data<- dia1
   totalizados_med <-  apply(predicciones[,7:13], MARGIN = 2, sum)
-  return(list(totalizados_med,predicciones))
+  return(list(totalizados_med,predicciones,barrios_med))
 }
-prediccion_dia(f1)[[1]]
-
 #MAPA
-mapview(barrios_med, zcol=c("Total"))
-mapview(barrios_med, zcol=c("escala"))
+mapview(prediccion_dia(f1)[3], zcol=c("Total"))
 
 
-# Semanal ----input: f1="2014-03-25"; f2 = "2014-04-03"
-f1="2014-03-25"; f2 = "2014-04-26"
+# Semanal ----input: f1="2020-03-25"; f2 = "2020-04-03"
+f1="2020-03-25"; f2 = "2020-04-26"
 prediccion_semana <- function(f1, f2){
   f1 <- f1 %>% as.Date()
   f2 <- f2 %>% as.Date()
   secuencia <- seq(f1, f2, 1)
+  barrios_med=readRDS("bases_datos/barrios_Medellin.rds")
   mi_lista <- list()
   for (i in secuencia) {
     mi_lista <- append(mi_lista, prediccion_dia(as.Date(i))[2])
@@ -78,21 +77,20 @@ prediccion_semana <- function(f1, f2){
   dia1<-left_join(barrios_med@data, predicciones, by= c("NOMBRE" = "BARRIO"))
   barrios_med@data<- dia1
   totalizados_med <-  apply(predicciones[,2:7], MARGIN = 2, sum)
-  return(list(totalizados_med,predicciones))
+  return(list(totalizados_med,barrios_med))
 }
-prediccion_semana(f1, f2)
-
-mapview(barrios_med, zcol=c("Total"))
-mapview(barrios_med, zcol=c("escala"))
+#prediccion_semana(f1, f2)[1]
+#mapview(barrios_med,zcol=c("Total"))
+mapview(prediccion_semana(f1, f2)[[2]], zcol=c("Total"))
+mapview(prediccion_semana(f1, f2)[2], zcol=c("escala"))
 
 
 # Mensual ---- input: 01 or 02 .... or 12
-
-
 prediccion_mes <- function(ano,mes){
   f1 <- as.Date(paste(ano, mes, 01, sep = "-")) %>%  as.Date()
   f2 <- bsts::LastDayInMonth(f1) %>%  as.Date()
   secuencia <- seq(f1, f2, 1)
+  barrios_med=readRDS("bases_datos/barrios_Medellin.rds")
   mi_lista <- list()
   for (i in secuencia) {
     mi_lista <- append(mi_lista, prediccion_dia(as.Date(i))[2])
@@ -106,9 +104,7 @@ prediccion_mes <- function(ano,mes){
   dia1<-left_join(barrios_med@data, predicciones, by= c("NOMBRE" = "BARRIO"))
   barrios_med@data<- dia1
   totalizados_med <-  apply(predicciones[,2:7], MARGIN = 2, sum)
-  return(list(totalizados_med,predicciones))
+  return(list(totalizados_med,barrios_med))
 }
 ano <- 2014 ; mes <- 02
-prediccion_mes(ano,mes)
-
-
+mapview(prediccion_mes(ano,mes)[[2]], zcol=c("Total"))
