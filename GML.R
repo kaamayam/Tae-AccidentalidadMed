@@ -17,7 +17,14 @@ validation <- conteos %>% filter(ano >= 2018 | ano <= 2019)
 test <- conteos  %>% filter(ano >= 2020)
 
 #### modelo de prueba *************************************************************
-#modelo <- lm(n ~ ano + mes + dia_n + dia + holi_bin + CLASE_ACCIDENTE+BARRIO, data = conteos)
+modelo <- lm(n ~ ano + mes + dia_n + dia + holi_bin + CLASE_ACCIDENTE+BARRIO, 
+             data = conteos)
+y_est1<- predict(object = modelo, newdata = train[,-5])
+y_est2<-predict(object = modelo, newdata=test[,-5])
+mean((train$n - y_est1)^2)
+mean((test$n - y_est2)^2)
+
+
 
 fit.1 <- glm (n ~ ano + mes + dia_n + dia + holi_bin + CLASE_ACCIDENTE + BARRIO, 
               family=poisson(link = log),data = train)
@@ -52,6 +59,10 @@ y_est<-predict(object=tree1, newdata=test[,-5])
 mean((test$n - y_est)^2)
 
 #random forest
+library(caret)
+library(randomForest)
+bosque <- train(n ~ . ,data = train, method = 'rf', 
+                trControl = trainControl(method='cv',number = 5))
 
 #knn
 library(kknn)

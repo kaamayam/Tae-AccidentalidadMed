@@ -1,1 +1,3 @@
 # Tae-AccidentalidadMed
+
+El presente trabajo es un reporte técnico sobre la predicción de incidentes viales en la Ciudad de Medellin a partir de datos históricos de accidentes reportados por la Sectretaría de Movilidad. De acuerdo a la Organización Mundial de la Salud, al año se presenta la pérdida de más de 1,5 millones de vidas en siniestros viales, estos se han convertido en una problemática social por el daño que producen no solo en las familias sino también en la comunidad. En el caso de la ciudad de Medellín, según cifras de la Alcaldía de Medellín y la Secretaría de Movilidad, entre los años 2014 y 2020 se presentaron aproximadamente más de 200.000 incidentes viales.
