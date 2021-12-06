@@ -21,6 +21,7 @@ test <- conteos  %>% filter(ano >= 2020)
 
 fit.1 <- glm (n ~ ano + mes + dia_n + dia + holi_bin + CLASE_ACCIDENTE + BARRIO, 
               family=poisson(link = log),data = train)
+
 #summary(fit.1)
 saveRDS(fit.1, "modelo_glm.rds")
 fit.1<-readRDS("modelo_glm.rds")
