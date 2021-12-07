@@ -40,6 +40,9 @@ datos <- readRDS("bases_datos/df.rds")
 head(datos,50) %>%kbl() %>%  kable_styling(font_size = 12) %>%
   kableExtra::scroll_box(width = "100%", height = "200px")
 ```
+
+
+
 ```{r out.width="72%"}
 ##Encontramos en las observaciones de la variable Barrio que 19344 accidentes registrados   se ubican en el municipio de Heliconia y por ende no corresponden a la ciudad de Medellín, debido a esto decidimos eliminar esos datos ya que era muy dificil buscar la coordenada de más de 19.000 registros de los cuales la gran mayoria no tenían registros en las variabales de BARRIO,COLUMNA y NÚMERO DE COMUNA.
 Accidentes_viales= c("Localizados","No localizados por falta de información")
@@ -268,13 +271,13 @@ fit.1<-readRDS("modelo_glm.rds")
 ```{r echo=T}
 y_est1<- predict.glm(object = fit.1, newdata = train[,-5], type = "response")
 y_est2<-predict(object = fit.1, newdata=test[,-5], , type = "response")
-y_est3<-predict(object = fit.1, newdata=validation[,-5], type = "response" )
 mean((train$n - y_est1)^2)
 mean((test$n - y_est2)^2)
-mean((validation$n - y_est3)^2)
 ```
 
+# Error cuadrático medio
 
+A continuación se presenta el error cuadrático medio para los datos de entrenamiento y prueba respectivamente
 
 
 $$
@@ -284,9 +287,13 @@ $$
 $$
 \mathrm{MSE_{test}}=\frac{1}{N} \sum_{i=1}^{N}\left(y_{i}-\hat{y}_{i}\right)^{2}= 1.430139
 $$
+# Aplicación
 
-# App
+Se llevó a cabo una aplicación en Shiny del software R, donde el usuario tiene acceso a una serie de mapas interacctivos de la ciudad de Medellín con sus respectivos barrios y el conteo de accidentes predichos para una fecha o intervalo de tiempo dado distinguido por clase de accidente(atropello, caida ocupante, choque, incendio, otro, volcamiento). La iterfaz de usurario se muestra a continuación y se encuentra alojada en el siguiente enlace:  https://kaamayam.shinyapps.io/Accidentalidad_medellin/
 
+```{r pressure, echo=FALSE, out.width = '80%'}
+knitr::include_graphics("Screen Shot 2021-12-06 at 11.07.32 PM.png")
+```
 
 
 # Código

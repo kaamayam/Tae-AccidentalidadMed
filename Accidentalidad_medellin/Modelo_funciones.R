@@ -57,6 +57,7 @@ prediccion_dia <- function(f1){
 #MAPA
 f1 <- as.Date('2014-03-25')
 mapview(prediccion_dia(f1)[3], zcol=c("Total"))
+mapview(prediccion_dia(f1)[3], zcol=c("escala"))
 
 
 # Semanal ----input: f1="2020-03-25"; f2 = "2020-04-03"
