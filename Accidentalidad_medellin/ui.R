@@ -15,7 +15,7 @@ shinyUI(fluidPage(
             dashboardSidebar(
                 sidebarMenu(
                     menuItem("Modelo de predicción", tabName = "p1", icon=icon("users")),
-                    menuItem("Mapa de casos", tabName = "p2", icon=icon("globe-americas")),
+                    #menuItem("Mapa de casos", tabName = "p2", icon=icon("globe-americas")),
                     menuItem("Base de datos", tabName = "p3", icon=icon("database")),
                     menuItem("Video presentación", tabName = "p4", icon=icon("play-circle")),
                     menuItem("Anexos", tabName = "p5", icon=icon("github"))
@@ -76,20 +76,7 @@ shinyUI(fluidPage(
                                 ),
                             ),
                     ),
-                    tabItem(tabName = "p2",
-                            fluidPage(
-                                br(
-                                    fluidPage(
-                                        h1("Mapa de casos ciudad de medellín"),
-                                        h3("Aqui esta vizualizado los accidentes y donde se predice que van a suceder, se grafica despues de darle confirmar en la parte inicial de la platataforma, en caso de que estes seguro de tu busqueda dar actualizar."),
-                                    ),
-                                ),
-                                br(
-                                    actionButton("Actualizar","Actualizar",icon=icon("map")),
-                                ),
-                                leafletOutput("mapplot")
-                            )
-                    ),
+               
                     tabItem(tabName = "p3",
                             h2("modelo de entrenamiento Base de datos"),
                             DT::dataTableOutput("mytable")

@@ -1,4 +1,15 @@
 library(shiny)
+library(shinydashboard)
+library(leaflet)
+library(DT)
+library(rgdal)
+library(mapview)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(lubridate)
+library(bsts)
+
 
 ## LLamar las funciones y los datos
 source('Modelo_funciones.R')
@@ -10,11 +21,11 @@ shinyServer(function(input, output) {
   output$intervalo=renderText({
     as.character(input$`rango de fechas`)
   })
-  output$holiday = DT::renderDataTable({holyday})
-  output$tab <- renderUI({
-    url <- a("fECHAS ESPECIALES", href="https://www.agendaculturalmedellin.com/")
-    tagList("fechas especiales medellin:", url)
-  })
+  # output$holiday = DT::renderDataTable({holyday})
+  # output$tab <- renderUI({
+  #   url <- a("fECHAS ESPECIALES", href="https://www.agendaculturalmedellin.com/")
+  #   tagList("fechas especiales medellin:", url)
+  # })
   
   
   v<- reactiveValues(doText=FALSE)
@@ -50,34 +61,34 @@ shinyServer(function(input, output) {
   })
   
   
-  observeEvent(input$tabset, {
-    v$doText <- FALSE
-  }) 
+  #observeEvent(input$tabset, {
+  #  v$doText <- FALSE
+  #}) 
   
   
-  output$Informacion<- renderText({
-    if (v$doText == FALSE)return()
-    isolate({
-      data <- if (input$tabset == "Intervalos de tiempo") {
-        datos<-as.character(input$`rango de fechas`)
-        division<-str_split(datos, " ")
-        tala<-data.frame(unlist(division))
-      }else if (input$tabset == "Fechas especiales") {
-        fecha<-as.character(input$fecha)
-        paste(fecha)
-      }
-      else {
-        año=as.character(input$texto)
-        division<-str_split(año, ",")
-        talal<-data.frame(unlist(division))
-        paste(talal[1,1],"el numero 2:",talal[2,1])
-      }
-      data
-    })
-  })
+  # output$Informacion<- renderText({
+  #   if (v$doText == FALSE)return()
+  #   isolate({
+  #     data <- if (input$tabset == "Intervalos de tiempo") {
+  #       datos<-as.character(input$`rango de fechas`)
+  #       division<-str_split(datos, " ")
+  #       tala<-data.frame(unlist(division))
+  #     }else if (input$tabset == "Fechas especiales") {
+  #       fecha<-as.character(input$fecha)
+  #       paste(fecha)
+  #     }
+  #     else {
+  #       año=as.character(input$texto)
+  #       division<-str_split(año, ",")
+  #       talal<-data.frame(unlist(division))
+  #       paste(talal[1,1],"el numero 2:",talal[2,1])
+  #     }
+  #     data
+  #   })
+  # })
   
   
-  output$mapplot= renderLeaflet({mapi@map})
+  #output$mapplot= renderLeaflet({mapi@map})
   output$Link= renderUI({
     url <- a("fECHAS ESPECIALES", href="https://www.agendaculturalmedellin.com/")
     tagList("fechas especiales medellin:", url)
@@ -85,15 +96,15 @@ shinyServer(function(input, output) {
   
   
   
-  z <- reactiveValues(datos = NULL)
-  observeEvent(input$Actualizar, {
-    z$datos <-mapi@map 
-  })
+  #z <- reactiveValues(datos = NULL)
+  #observeEvent(input$Actualizar, {
+  #  z$datos <-mapi@map 
+  #})
   
   
   
-  output$mapplot= renderLeaflet({
-    if (is.null(z$data)) return()
-    z$data
-  })
+  #output$mapplot= renderLeaflet({
+  #  if (is.null(z$data)) return()
+  #  z$data
+  #})
 })
