@@ -31,43 +31,43 @@ shinyUI(fluidPage(
                                        ya sea intervalos de tiempo, fechas en especifico, o por meses; en la parte de mapa de casos esta la interaccion con este"),
                                 ),
                                 sidebarLayout(
-                                  sidebarPanel(width = 8,
-                                    tabsetPanel(id="tabset",
-                                    tabPanel("Por intervalo de tiempo (semana)",
-                                                dateRangeInput("rango_de_fechas", "fecha de accion:",
-                                                               start = "2014-01-01",
-                                                               end   = "2014-01-08"),
-                                             leafletOutput("mi_grafico_1"),
+                                    sidebarPanel(width = 8,
+                                                 tabsetPanel(id="tabset",
+                                                             tabPanel("Por intervalo de tiempo (semana)",
+                                                                      dateRangeInput("rango_de_fechas", "fecha de accion:",
+                                                                                     start = "2014-01-01",
+                                                                                     end   = "2014-01-08"),
+                                                                      leafletOutput("mi_grafico_1"),
+                                                             ),
+                                                             tabPanel("Por fecha especifica",
+                                                                      dateInput("fecha", "dia:", value = "2012-02-29"),
+                                                                      leafletOutput("mi_grafico_2"),
+                                                                      
+                                                                      
+                                                                      
+                                                             ),
+                                                             tabPanel("Por mes especifico",
+                                                                      textInput("ano","digite fecha:(año,mes)", value = "2014"),
+                                                                      textInput("mes","digite fecha:(año,mes)", value = "08"),
+                                                                      leafletOutput("mi_grafico_3"),
+                                                             ),
+                                                             #
+                                                             
+                                                 ),
+                                                 actionButton("api","Continuar y graficar",icon=icon("brain"))
                                     ),
-                                    tabPanel("Por fecha especifica",
-                                                dateInput("fecha", "dia:", value = "2012-02-29"),
-                                             leafletOutput("mi_grafico_2"),
-                                             
-                                           
-                                             
+                                    mainPanel(
+                                        textOutput("Informacion"),
+                                        width = 4,
+                                        
                                     ),
-                                    tabPanel("Por mes especifico",
-                                              textInput("ano","digite fecha:(año,mes)", value = "2014"),
-                                              textInput("mes","digite fecha:(año,mes)", value = "08"),
-                                              leafletOutput("mi_grafico_3"),
-                                              ),
-                                          #
-                                    
-                                    ),
-                                    actionButton("api","Continuar y graficar",icon=icon("brain"))
-                                  ),
-                                  mainPanel(
-                                    textOutput("Informacion"),
-                                    width = 4,
-                                    
-                                  ),
                                 ),
                             ),
                             
                             br(
                                 fluidPage(
                                     
-                                      # grafico aqui
+                                    # grafico aqui
                                 ),
                             ),
                             br(
@@ -85,7 +85,7 @@ shinyUI(fluidPage(
                                     ),
                                 ),
                                 br(
-                                actionButton("Actualizar","Actualizar",icon=icon("map")),
+                                    actionButton("Actualizar","Actualizar",icon=icon("map")),
                                 ),
                                 leafletOutput("mapplot")
                             )
@@ -101,15 +101,15 @@ shinyUI(fluidPage(
                     ),
                     tabItem(tabName = "p5",
                             fluidPage(
-                        
-                  
-                              br(h2("Reporte técnico")),
-                              tags$a(href="https://rpubs.com/kaamayam/Accidentalidadtae", br(h3("https://rpubs.com/kaamayam/Accidentalidadtae"))),
-                       
-                              
-                              br(h2("Repositorio GitHub")),
-                              tags$a(href="https://github.com/kaamayam/Tae-AccidentalidadMed", br(h3("https://github.com/kaamayam/Tae-AccidentalidadMed"))),
-                              
+                                
+                                
+                                br(h2("Reporte técnico")),
+                                tags$a(href="https://rpubs.com/kaamayam/Accidentalidadtae", br(h3("https://rpubs.com/kaamayam/Accidentalidadtae"))),
+                                
+                                
+                                br(h2("Repositorio GitHub")),
+                                tags$a(href="https://github.com/kaamayam/Tae-AccidentalidadMed", br(h3("https://github.com/kaamayam/Tae-AccidentalidadMed"))),
+                                
                             )
                     )
                 ),
