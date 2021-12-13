@@ -9,7 +9,7 @@ library(stringr)
 
 
 shinyUI(fluidPage(
-    if (interactive()) {
+
         dashboardPage(
             dashboardHeader(title="Predicción Medellin"),
             dashboardSidebar(
@@ -37,11 +37,11 @@ shinyUI(fluidPage(
                                                                       dateRangeInput("rango_de_fechas", "fecha de accion:",
                                                                                      start = "2014-01-01",
                                                                                      end   = "2014-01-08"),
-                                                                      leafletOutput("mi_grafico_1"),
+                                                                      mapviewOutput("mi_grafico_1"),
                                                              ),
                                                              tabPanel("Por fecha especifica",
                                                                       dateInput("fecha", "dia:", value = "2012-02-29"),
-                                                                      leafletOutput("mi_grafico_2"),
+                                                                      mapviewOutput("mi_grafico_2"),
                                                                       
                                                                       
                                                                       
@@ -49,7 +49,7 @@ shinyUI(fluidPage(
                                                              tabPanel("Por mes especifico",
                                                                       textInput("ano","digite fecha:(año,mes)", value = "2014"),
                                                                       textInput("mes","digite fecha:(año,mes)", value = "08"),
-                                                                      leafletOutput("mi_grafico_3"),
+                                                                      mapviewOutput("mi_grafico_3"),
                                                              ),
                                                              #
                                                              
@@ -117,6 +117,6 @@ background-color: #201545;
 background: #201545;
 }
 '))
-            )
         )
-    }))
+        )
+))
