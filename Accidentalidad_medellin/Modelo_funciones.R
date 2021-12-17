@@ -1,9 +1,9 @@
 
-library(tidyverse)
-library(lubridate)
-library(bsts)
-library(mapview)
-
+# library(tidyverse)
+# library(lubridate)
+# library(bsts)
+# library(mapview)
+# library(leaflet)
 
 # Cargando el modelo -------
 modelo <- readRDS("modelo_glm.rds")
@@ -55,9 +55,14 @@ prediccion_dia <- function(f1){
   return(list(totalizados_med,predicciones,barrios_med))
 }
 #MAPA
-f1 <- as.Date('2014-03-25')
-mapview(prediccion_dia(f1)[3], zcol=c("Total"))
-mapview(prediccion_dia(f1)[3], zcol=c("escala"))
+# f1 <- as.Date('2014-03-25')
+# mapview(prediccion_dia(f1)[[3]], zcol=c("Total"))
+# mapview(prediccion_dia(f1)[[3]], zcol=c("escala"))
+
+
+# m=leaflet(prediccion_dia(f1)[[3]] )
+# m=addPolygons(m,popup = prediccion_dia(f1)[[3]] )
+# m
 
 
 # Semanal ----input: f1="2020-03-25"; f2 = "2020-04-03"
@@ -84,8 +89,8 @@ prediccion_semana <- function(f1, f2){
 }
 #prediccion_semana(f1, f2)[1]
 #mapview(barrios_med,zcol=c("Total"))
-mapview(prediccion_semana(f1, f2)[[2]], zcol=c("Total"))
-mapview(prediccion_semana(f1, f2)[2], zcol=c("escala"))
+# mapview(prediccion_semana(f1, f2)[[2]], zcol=c("Total"))
+# mapview(prediccion_semana(f1, f2)[2], zcol=c("escala"))
 
 
 # Mensual ---- input: 01 or 02 .... or 12
@@ -109,5 +114,5 @@ prediccion_mes <- function(ano,mes){
   totalizados_med <-  as.data.frame(apply(predicciones[,2:7], MARGIN = 2, sum))
   return(list(totalizados_med,barrios_med))
 }
-ano <- 2014 ; mes <- 02
-mapview(prediccion_mes(ano,mes)[[2]], zcol=c("Total"))
+# ano <- 2014 ; mes <- 02
+# mapview(prediccion_mes(ano,mes)[[2]], zcol=c("Total"))

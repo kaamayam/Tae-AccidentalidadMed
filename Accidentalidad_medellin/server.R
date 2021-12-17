@@ -1,10 +1,12 @@
-library(shiny)
+#library(shiny)
+
+library(shinydashboard)
+library(shinythemes)
 library(shinydashboard)
 library(leaflet)
 library(DT)
 library(rgdal)
 library(mapview)
-#install.packages('mapview', dependencies = T)
 library(dplyr)
 library(stringr)
 library(tidyverse)
@@ -22,90 +24,94 @@ shinyServer(function(input, output) {
   output$intervalo=renderText({
     as.character(input$`rango de fechas`)
   })
-  # output$holiday = DT::renderDataTable({holyday})
-  # output$tab <- renderUI({
-  #   url <- a("fECHAS ESPECIALES", href="https://www.agendaculturalmedellin.com/")
-  #   tagList("fechas especiales medellin:", url)
-  # })
+
   
   
-  v<- reactiveValues(doText=FALSE)
-  observeEvent(input$api,{
-    
-    
-    # mapa rango fechas
+  # reactive event for map ****************** 1
+  dataInput1 <- eventReactive(input$api,{  
+    source('Modelo_funciones.R')
     f1 <- input$rango_de_fechas[1]
     f2 <- input$rango_de_fechas[2]
     m1 <- mapview(prediccion_semana(f1, f2)[[2]], zcol=c("Total"))
-    output$mi_grafico_1 <- renderLeaflet({
-      m1@map
-    })
-    
-    # mapa fecha especifica
+    m1 #**** (1)
+  })
+  
+  output$mi_grafico_1 <- renderLeaflet({ # **** (2)
+    dataInput1()@map
+  })
+  
+  
+  # reactive event for map ***************** 2
+  dataInput2 <- eventReactive(input$api,{  
+    source('Modelo_funciones.R')
     f1 <- input$fecha
-    m2 <- mapview(prediccion_dia(f1)[3], zcol=c("Total"))
-    output$mi_grafico_2 <- renderLeaflet({
-      m2@map
-    })
-    
-    
-    # mapa rango fechas
+    m2 <- mapview(prediccion_dia(f1)[[3]], zcol=c("Total"))
+    m2 #**** (1)
+  })
+  
+  output$mi_grafico_2 <- renderLeaflet({ # **** (2)
+    dataInput2()@map
+  })
+  
+  
+  # reactive event for map ******************* 3
+  dataInput3 <- eventReactive(input$api,{   
+    source('Modelo_funciones.R')
     ano <- input$ano
     mes <- input$mes
     m3 <- mapview(prediccion_mes(ano,mes)[[2]], zcol=c("Total"))
-    output$mi_grafico_3 <- renderLeaflet({
-      m3@map
-    })
-    
-    
-    
+    m3 <- mapview(prediccion_dia(f1)[[3]], zcol=c("Total"))
+    m3 #**** (1)
   })
   
-  
-  #observeEvent(input$tabset, {
-  #  v$doText <- FALSE
-  #}) 
-  
-  
-  # output$Informacion<- renderText({
-  #   if (v$doText == FALSE)return()
-  #   isolate({
-  #     data <- if (input$tabset == "Intervalos de tiempo") {
-  #       datos<-as.character(input$`rango de fechas`)
-  #       division<-str_split(datos, " ")
-  #       tala<-data.frame(unlist(division))
-  #     }else if (input$tabset == "Fechas especiales") {
-  #       fecha<-as.character(input$fecha)
-  #       paste(fecha)
-  #     }
-  #     else {
-  #       año=as.character(input$texto)
-  #       division<-str_split(año, ",")
-  #       talal<-data.frame(unlist(division))
-  #       paste(talal[1,1],"el numero 2:",talal[2,1])
-  #     }
-  #     data
-  #   })
-  # })
-  
-  
-  #output$mapplot= renderLeaflet({mapi@map})
-  output$Link= renderUI({
-    url <- a("fECHAS ESPECIALES", href="https://www.agendaculturalmedellin.com/")
-    tagList("fechas especiales medellin:", url)
+  output$mi_grafico_3 <- renderLeaflet({ # **** (2)
+    dataInput3()@map
   })
   
   
   
-  #z <- reactiveValues(datos = NULL)
-  #observeEvent(input$Actualizar, {
-  #  z$datos <-mapi@map 
-  #})
   
   
+  # reactive event for map ****************** 1
+  dataInput1.1 <- eventReactive(input$api,{  
+    source('Modelo_funciones.R')
+    f1 <- input$rango_de_fechas[1]
+    f2 <- input$rango_de_fechas[2]
+    p1 <- prediccion_semana(f1, f2)[[1]]
+    p1 #**** (1)
+  })
   
-  #output$mapplot= renderLeaflet({
-  #  if (is.null(z$data)) return()
-  #  z$data
-  #})
+  output$table1 <- DT::renderDataTable(DT::datatable({
+    dataInput1.1()
+  }))
+
+
+  
+  # reactive event for map ****************** 2
+  dataInput1.2 <- eventReactive(input$api,{  
+    source('Modelo_funciones.R')
+    f1 <- input$fecha
+    p2 <- prediccion_dia(f1)[[1]]
+    p2 #**** (1)
+  })
+  
+  output$table2 <- DT::renderDataTable(DT::datatable({
+    dataInput1.2()
+  }))
+  
+  
+  # reactive event for map ****************** 3
+  dataInput1.3 <- eventReactive(input$api,{  
+    source('Modelo_funciones.R')
+    ano <- input$ano
+    mes <- input$mes
+    p3 <- prediccion_mes(f1, f2)[[1]]
+    p3 #**** (1)
+  })
+  
+  output$table3 <- DT::renderDataTable(DT::datatable({
+    dataInput1.3()
+  }))
+  
+
 })

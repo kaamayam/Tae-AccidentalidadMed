@@ -1,0 +1,14 @@
+name: Accidentalidad_medellin
+title: Accidentalidad_medellin
+username:
+account: hebermudezg
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5284723
+bundleId: 5378228
+url: https://hebermudezg.shinyapps.io/Accidentalidad_medellin/
+when: 1639614848.63624
+lastSyncTime: 1639614848.63625
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .Rapp.history|.RData|Modelo_funciones.R|modelo_glm.rds|www/.DS_Store|www/mytheme.css|bases_datos

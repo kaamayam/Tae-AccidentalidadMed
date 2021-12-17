@@ -1,4 +1,4 @@
-library(shiny)
+
 library(shinydashboard)
 library(leaflet)
 library(DT)
@@ -6,74 +6,82 @@ library(rgdal)
 library(mapview)
 library(dplyr)
 library(stringr)
-
-
-shinyUI(fluidPage(
-  
+library(shinythemes)
+shinyUI(fluidPage(theme = shinytheme("flatly"),
   dashboardPage(
-    dashboardHeader(title="Predicción Medellin"),
+    dashboardHeader(title = 'Accidentalidad Medellín'),
+    # menu
     dashboardSidebar(
       sidebarMenu(
-        menuItem("Modelo de predicción", tabName = "p1", icon=icon("users")),
+        menuItem("Modelo Predictivo", tabName = "p1", icon=icon("brain")),
         menuItem("Base de datos", tabName = "p2", icon=icon("database")),
         menuItem("Video presentación", tabName = "p3", icon=icon("play-circle")),
-        menuItem("Anexos", tabName = "p4", icon=icon("github"))
+        menuItem("Anexos", tabName = "p4", icon=icon("github")),
+        hr(),
+        # botton para graficar los mapas
+        actionButton(inputId = "api",label = "Continuar y graficar",icon=icon("brain"))
       )
     ),
+    
+    # cuerpo del dash board
     dashboardBody(
       tabItems(
+        
+        # Seccion Modelo Predictivo
         tabItem(tabName = "p1",
                 fluidPage(
-                  br(
-                    h1("Modelo de predicción"),
-                    h3("los siguientes funciones que tienen la finalidad de que el usuario utilice el modelo para predecir algun tipo de accidente bajo 3 supuestos,
-                                       ya sea intervalos de tiempo, fechas en especifico, o por meses; en la parte de mapa de casos esta la interaccion con este"),
-                  ),
-                  sidebarLayout(
-                    sidebarPanel(width = 8,
+                    sidebarPanel(width = 12,
+                                
+                                 h3('Podras elegir entres formas de predicción posible a continuación: ', style="color:gray;"),
+                                 h4('1. Intervalod de tiempo: Podrás elegir una semana especifica. '),
+                                 h4('2. Por fecha especifica: Podrás elegir un dia especifico. '),
+                                 h4('3. Por mes espeficico: Podrás elegir un mes y un año especifico. '),
+                                 hr(),
                                  tabsetPanel(id="tabset",
-                                             tabPanel("Por intervalo de tiempo (semana)",
-                                                      dateRangeInput("rango_de_fechas", "fecha de accion:",
-                                                                     start = "2014-01-01",
-                                                                     end   = "2014-01-08"),
-                                                      mapviewOutput("mi_grafico_1"),
+                                             hr(),
+                                             
+                                             
+                                             tabPanel("Por intervalo de tiempo",icon=icon("calendar"),
+                                                      hr(),
+                                                      dateRangeInput("rango_de_fechas",label = "Elegir semana", width = 500,
+                                                                     start = "2018-01-01",
+                                                                     end   = "2018-01-08"),
+                                                      leafletOutput("mi_grafico_1", width = 600),
+                                                      h4('Accidentes por tipo'),
+                                                      DT::dataTableOutput("table1", width = 600),
                                              ),
-                                             tabPanel("Por fecha especifica",
-                                                      dateInput("fecha", "dia:", value = "2012-02-29"),
-                                                      mapviewOutput("mi_grafico_2"),
+                                             tabPanel("Por fecha especifica", icon=icon("clock"), 
+                                                      hr(),
+                                                      dateInput("fecha", "Selecciona el día:", value = "2018-02-29", width = 200),
+                                                      leafletOutput("mi_grafico_2", width = 600),
+                                                      h4('Accidentes por tipo'),
+                                                      DT::dataTableOutput("table2", width = 600),
+                                                      
                                                       
                                                       
                                                       
                                              ),
-                                             tabPanel("Por mes especifico",
-                                                      textInput("ano","digite fecha:(año,mes)", value = "2014"),
-                                                      textInput("mes","digite fecha:(año,mes)", value = "08"),
-                                                      mapviewOutput("mi_grafico_3"),
+                                             tabPanel("Por mes especifico", icon=icon("car"), 
+                                                      hr(),
+                                                      textInput("ano","Digite un año", value = "2018", width = 100),
+                                                      textInput("mes","Digite un mes", value = "08", width = 100),
+                                                      leafletOutput("mi_grafico_3", width = 600),
+                                                      h4('Accidentes por tipo'),
+                                                      DT::dataTableOutput("table3", width = 600),
                                              ),
                                              #
-                                             
+                                               
                                  ),
-                                 actionButton("api","Continuar y graficar",icon=icon("brain"))
+                                 
+                               
                     ),
                     mainPanel(
                       textOutput("Informacion"),
                       width = 4,
                       
                     ),
-                  ),
-                ),
-                
-                br(
-                  fluidPage(
-                    
-                    # grafico aqui
-                  ),
-                ),
-                br(
-                  fluidPage(
-                    uiOutput("tab")
-                  ),
-                ),
+                ), #end fluid
+
         ),
         
         tabItem(tabName = "p2",
@@ -101,22 +109,6 @@ shinyUI(fluidPage(
         )
       ),
     ),
-    tags$head(
-      tags$style(HTML('
-.skin-blue .main-header .logo{
-background-color: #fff;
-color: #201545;
-}
-.skin-blue .main-header .navbar {
-background-color: #201545;
-}
-.skin-blue .main-sidebar{
-background-color: #201545;
-}
-.skin-blue .sidebar-menu>li.active>a{
-background: #201545;
-}
-'))
-    )
+
   )
 ))
