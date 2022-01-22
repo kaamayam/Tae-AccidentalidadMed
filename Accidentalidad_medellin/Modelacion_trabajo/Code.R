@@ -6,11 +6,11 @@ library(mapview)#mapa
 
 
 # datos
-datos<- readRDS("bases_datos/datos.rds")
-holidays_fecha <- readRDS("bases_datos/Holidays.rds")%>% as.data.frame()
-barrios_med <- readRDS("bases_datos/barrios_Medellin.rds") # Objeto espacial
+datos<- readRDS("Accidentalidad_medellin/bases_datos/datos.rds")
+holidays_fecha <- readRDS("Accidentalidad_medellin/bases_datos/holidays.rds")%>% as.data.frame()
+barrios_med <- readRDS("Accidentalidad_medellin/bases_datos/barrios_Medellin.rds") # Objeto espacial
 #conteos<- readRDS("bases_datos/conteos_sin.rds")
-conteos<- readRDS("bases_datos/conteos_con.rds")
+conteos<- readRDS("Accidentalidad_medellin/bases_datos/conteos_con.rds")
 
 
 #conteos <- datos %>% group_by(FECHA_ACCIDENTE, CLASE_ACCIDENTE=as.factor(CLASE_ACCIDENTE),
@@ -39,8 +39,8 @@ test <- conteos  %>% filter(ano >= 2020)
 
 #### modelo de prueba *************************************************************
 
-#modelo <- lm(n ~ ano + mes + dia_n + dia + holi_bin + CLASE_ACCIDENTE + BARRIO, data = conteos)
-#saveRDS(modelo, "modelo.rds")
+modelo <- lm(n ~ ano + mes + dia_n + dia + holi_bin + CLASE_ACCIDENTE + BARRIO, data = conteos)
+saveRDS(modelo, "modelo.rds")
 modelo <- readRDS("modelo_glm.rds")
 
 # DIARIO ********************************************

@@ -1,12 +1,12 @@
 
-# library(tidyverse)
-# library(lubridate)
-# library(bsts)
-# library(mapview)
-# library(leaflet)
+library(tidyverse)
+library(lubridate)
+library(bsts)
+library(mapview)
+library(leaflet)
 
 # Cargando el modelo -------
-modelo <- readRDS("modelo_glm.rds")
+##modelo <- readRDS("modelo_glm.rds")
 
 # datos
 #datos<- read.csv("incidentes_viales.csv", sep = ";",quote = "")

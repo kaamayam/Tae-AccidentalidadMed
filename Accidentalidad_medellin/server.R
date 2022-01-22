@@ -24,7 +24,8 @@ shinyServer(function(input, output) {
   output$intervalo=renderText({
     as.character(input$`rango de fechas`)
   })
-
+  output$holidays<-DT::renderDataTable({
+    holidays_fecha})
   
   
   # reactive event for map ****************** 1
@@ -84,8 +85,8 @@ shinyServer(function(input, output) {
   output$table1 <- DT::renderDataTable(DT::datatable({
     dataInput1.1()
   }))
-
-
+  
+  
   
   # reactive event for map ****************** 2
   dataInput1.2 <- eventReactive(input$api,{  
