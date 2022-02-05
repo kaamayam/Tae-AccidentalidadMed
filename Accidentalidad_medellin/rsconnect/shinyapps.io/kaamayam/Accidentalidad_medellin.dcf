@@ -5,7 +5,10 @@ account: kaamayam
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5280791
-bundleId:
+bundleId: 5546841
 url: https://kaamayam.shinyapps.io/Accidentalidad_medellin/
-when: 1639702386.882
-lastSyncTime: 1639702386.88202
+when: 1644083042.34412
+lastSyncTime: 1644083042.34414
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .Rapp.history|Modelacion_trabajo/Code.R|Modelacion_trabajo/GML.R

@@ -6,6 +6,7 @@ library(mapview)#mapa
 
 
 # datos
+
 datos<- readRDS("Accidentalidad_medellin/bases_datos/datos.rds")
 holidays_fecha <- readRDS("Accidentalidad_medellin/bases_datos/holidays.rds")%>% as.data.frame()
 barrios_med <- readRDS("Accidentalidad_medellin/bases_datos/barrios_Medellin.rds") # Objeto espacial

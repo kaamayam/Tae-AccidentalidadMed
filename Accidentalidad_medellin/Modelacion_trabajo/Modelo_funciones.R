@@ -6,7 +6,7 @@ library(mapview)
 
 
 # Cargando el modelo -------
-modelo <- readRDS("modelo_glm.rds")
+modelo <- readRDS("Accidentalidad_medellin/bases_datos/modelo.rds")
 
 # datos
 #datos<- read.csv("incidentes_viales.csv", sep = ";",quote = "")

@@ -6,7 +6,7 @@ library(mapview)
 library(leaflet)
 
 # Cargando el modelo -------
-##modelo <- readRDS("modelo_glm.rds")
+modelo <- readRDS("bases_datos/modelo.rds")
 
 # datos
 #datos<- read.csv("incidentes_viales.csv", sep = ";",quote = "")
