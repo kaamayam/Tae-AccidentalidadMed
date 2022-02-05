@@ -52,6 +52,7 @@ prediccion_dia <- function(f1){
   dia1<-left_join(barrios_med@data, predicciones, by= c("NOMBRE" = "BARRIO"))
   barrios_med@data<- dia1
   totalizados_med <-  as.data.frame(apply(predicciones[,7:13], MARGIN = 2, sum))
+  colnames(totalizados_med)<-c("Total de accidentes por tipo")
   return(list(totalizados_med,predicciones,barrios_med))
 }
 #MAPA
@@ -85,6 +86,7 @@ prediccion_semana <- function(f1, f2){
   dia1<-left_join(barrios_med@data, predicciones, by= c("NOMBRE" = "BARRIO"))
   barrios_med@data<- dia1
   totalizados_med <-  as.data.frame(apply(predicciones[,2:7], MARGIN = 2, sum))
+  colnames(totalizados_med)<-c("Total de accidentes por tipo")
   return(list(totalizados_med,barrios_med))
 }
 #prediccion_semana(f1, f2)[1]
@@ -112,6 +114,7 @@ prediccion_mes <- function(ano,mes){
   dia1<-left_join(barrios_med@data, predicciones, by= c("NOMBRE" = "BARRIO"))
   barrios_med@data<- dia1
   totalizados_med <-  as.data.frame(apply(predicciones[,2:7], MARGIN = 2, sum))
+  colnames(totalizados_med)<-c("Total de accidentes por tipo")
   return(list(totalizados_med,barrios_med))
 }
 # ano <- 2014 ; mes <- 02
