@@ -22,6 +22,6 @@ https://kaamayam.shinyapps.io/Accidentalidad_medellin/
 Parte escrita del trabajo en .Rmd sobre las indicaciones obtenidas en el trabajo;junto a su homonimo reporte en Html.
 
 ### Accidentalidad_mede:
-Debido al peso del modelo, puede ser descargado del siguiente enlace: https://drive.google.com/file/d/1h6Bzxyb-bSE9yMxx2-L54xoiDR8DZvEI/view?usp=sharing
+**Debido al peso del modelo, puede ser descargado del siguiente enlace:** https://drive.google.com/file/d/1h6Bzxyb-bSE9yMxx2-L54xoiDR8DZvEI/view?usp=sharing
 Toda la parte desarrollada de la app, el Ui y el server junto a algunas bases de datos necesarias para su lectura y funcionalidad, con una base escrita del archivo y con una carpeta de modelamiento_trabajo con las principales caracteristicas hechas dentro de la app como ademas gran parte del modelo(code.R) necesario de ser leido con anterioridad por la dificultad de cargar el modelo y el peso que este conlleva tanto.
 
