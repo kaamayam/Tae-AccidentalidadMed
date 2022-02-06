@@ -45,11 +45,12 @@ head(datos,50) %>%kbl() %>%  kable_styling(font_size = 12) %>%
 Encontramos en las observaciones de la variable Barrio que 19344 accidentes registrados   se ubican en el municipio de Heliconia y por ende no corresponden a la ciudad de Medellín, debido a esto decidimos eliminar esos datos ya que era muy dificil buscar la coordenada de más de 19.000 registros de los cuales la gran mayoria no tenían registros en las variabales de BARRIO,COLUMNA y NÚMERO DE COMUNA
 
 
+
 ```{r out.width="72%"}
+n=as.Date(datos$FECHA_ACCIDENTE)
 Accidentes_viales= c("Localizados","No localizados por falta de información")
 porcentaje= c(0.92,0.077)
 dw=data.frame(Accidentes_viales,porcentaje)
-
 ggplot(dw,aes(x=2, y=porcentaje, fill=Accidentes_viales))+
   geom_bar(stat = "identity",
            color="white")+
@@ -60,24 +61,24 @@ ggplot(dw,aes(x=2, y=porcentaje, fill=Accidentes_viales))+
     theme_void()+
      labs(title = "Porcentaje de accidentes localizados y no localizados", caption = "Figura 1") +
   theme (plot.title = element_text(family="Comic Sans MS",
-                                   size=rel(1.5),  
+                                   size=rel(2),  
                                    vjust=2,  
                                    face="bold", 
                                    color="black", 
                                    lineheight=1.0))+
-  theme(plot.title = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.05))
   xlim(0.5,2.5)
 ```
- 
+
+
 En base a los datos en la figura 2 se evidencia que en el año 2018 se presentaron más accidentes que el resto de años.
 
 
 ```{r out.width="60%"}
 z=data.frame(table(datos$AÑO))
-
 gr2 <- ggplot(z, aes(x=Var1, y=Freq, fill=Var1)) + geom_bar(stat="identity",position = "dodge")+ labs(title="Accidentes por año", caption = "Figura 2",x = "Año", y = "Cantidad de accidentes")+
   theme (plot.title = element_text(family="Comic Sans MS",
-                                  size=rel(1.5),  
+                                  size=rel(2),  
                                   vjust=2,  
                                   face="bold", 
                                   color="black", 
@@ -85,7 +86,6 @@ gr2 <- ggplot(z, aes(x=Var1, y=Freq, fill=Var1)) + geom_bar(stat="identity",posi
   theme(plot.title = element_text(hjust = 0.5))+
   scale_fill_brewer(palette = "Set3")+
     theme(axis.ticks = element_blank(),axis.title = element_blank(),legend.position="none") 
-
 gr2
 ```
 Con respecto a la frecuencia de accidentes registrados por mes entre 2014 y 2020 se puede observar en la figura 3 que en el mes en que más se presentan incidentes viales es en Agosto, esto puede ser explicado porque en ese mes se lleva a cabo la Feria de Flores en la Ciudad de Medellin y por ende circulan más vehículos y peatones de lo normal. Asi mismo, podemos notar que el mes de abril es donde se han presentado menores accidentes.
@@ -93,12 +93,11 @@ Con respecto a la frecuencia de accidentes registrados por mes entre 2014 y 2020
 
 ```{r out.width="60%"}
 mes=data.frame(table(datos$MES))
-
 ggplot(datos, aes(x = MES)) + 
        geom_histogram(color = "white", fill = "coral",binwidth=1)+
   scale_x_continuous(breaks = seq(1,12,1))+
   theme (plot.title = element_text(family="Comic Sans MS",
-                                  size=rel(1.5),  
+                                  size=rel(2),  
                                   vjust=1,  
                                   face="bold", 
                                   color="black", 
@@ -112,13 +111,15 @@ En la figura 4, se puede ver que los dias que con mayor frecuencia se presentaro
 
 ```{r out.width="60%"}
 
-dias=format(datos$FECHA_ACCIDENTE,"%A")
-s=table(dias)
 
+
+dias=format(n,"%A")
+
+s=table(dias)
 tu=as.data.frame(s)
 gr5 <- ggplot(tu, aes(x=dias, y=Freq, fill=dias)) + geom_bar(stat="identity",position = "dodge")+ labs(title="Accidentes por dia de la semana", caption = "Figura 4",x = "Dia", y = "Cantidad de accidentes")+coord_flip()+
   theme (plot.title = element_text(family="Comic Sans MS",
-                                  size=rel(1.5),  
+                                  size=rel(2),  
                                   vjust=2,  
                                   face="bold", 
                                   color="black", 
@@ -126,36 +127,32 @@ gr5 <- ggplot(tu, aes(x=dias, y=Freq, fill=dias)) + geom_bar(stat="identity",pos
   theme(plot.title = element_text(hjust = 0.5))+
   scale_fill_brewer(palette = "Set3")+
     theme(axis.text.x = element_blank(), axis.ticks = element_blank(),axis.title = element_blank(),legend.position="none") 
-
 gr5
-
 ```
 
 La figura 5 presenta la gravedad de los accidentes registrados entre el 2014 y el 2020, se puede deducir que en todos los años los accidentes registrados en su mayoria presentan heridos y solo daños en comparación con las muertes.
 
 
 ```{r out.width="60%"}
-g = ggplot(datos, aes(AÑO, fill=GRAVEDAD_ACCIDENTE) ) +
+ ggplot(datos, aes(AÑO, fill=GRAVEDAD_ACCIDENTE) ) +
   labs(title = "Gravedad de los accidentes por año" , caption = "Figura 5")+ylab("") +
  theme (plot.title = element_text(family="Comic Sans MS",
-                                  size=rel(1.5),  
+                                  size=rel(2),  
                                   vjust=2,  
                                   face="bold", 
                                   color="black", 
                                   lineheight=1.0)) + 
-  theme(plot.title = element_text(hjust = 0.5))+
-
-g+geom_bar(position="dodge") + scale_fill_manual(values = alpha(c("coral", "darkcyan","gray"), 1)) +
+  theme(plot.title = element_text(hjust = 0.5))+geom_bar(position="dodge") + scale_fill_manual(values = alpha(c("coral", "darkcyan","gray"), 1)) +
   theme(axis.title.x = element_text(face="bold", size=10))   
 
 ```
+
 
 
 En la figura 6 se puede ver que entre el año 2014 y 2020 la clase de accidente que más se registro fue el choque,se puede ver que las clases  caida y atropello tienen en promedio un  comportamiento similar en cada uno de los años, ahora bien la clase incendio no es una variabale muy representativa ya que solo el 0.013% de los accidentes registrados pertenecen a la clase de incendio.También, en cuanto a la relación entre accidente por clase y gravedad del accidente,la mayoria de accidentes de la clase atropello presentan heridos al igual que la clase caida ocupante. Asi mismo, el 63.3% de choques en la mayoria de los casos registrados ocasiona solo daños y el 37.8% con heridos. Finalmente, la clase de acccidente que más muertes provocó en ese periodo fue el choque.
 
 
 ```{r out.width="60%", message=F, warning=F, center=T}
-
 ggplot(data = datos,
        mapping = aes(x =CLASE_ACCIDENTE, fill = CLASE_ACCIDENTE)) +
   geom_bar(bins = 7)+
@@ -169,7 +166,6 @@ ggplot(data = datos,
   labs(title="Accidentes por clase", caption = "Figura 6")+
   theme(plot.title = element_text(hjust = 0.5))+
     theme(axis.text.x = element_blank(), axis.ticks = element_blank(),axis.title = element_blank())
-
  
 ```
 
@@ -178,8 +174,10 @@ ggplot(data = datos,
 De acuerdo con la figure 7 podemos observar que con rspecto a la gravedad del accidente en su mayoria se presentan sólo daños y heridos a causa de choques.
 
 
+
+
 ```{r out.width="60%", message=F, warning=F, center=T}
-g0 = ggplot(datos, aes(GRAVEDAD_ACCIDENTE, fill=CLASE_ACCIDENTE) ) +
+ggplot(datos, aes(GRAVEDAD_ACCIDENTE, fill=CLASE_ACCIDENTE) ) +
   labs(title = "Gravedad de los accidentes por clase", caption = "Figura 7",x = "Gravedad del Accidente")+ylab("") +
    theme (plot.title = element_text(family="Comic Sans MS",
                                   size=rel(2),  
@@ -187,10 +185,7 @@ g0 = ggplot(datos, aes(GRAVEDAD_ACCIDENTE, fill=CLASE_ACCIDENTE) ) +
                                   face="bold", 
                                   color="black", 
                                   lineheight=1.5)) + 
-  theme(plot.title = element_text(hjust = 0.5))+
-g0+geom_bar(position="dodge") + scale_fill_manual(values = alpha(c("coral", "darkcyan","gray","red", "pink", "green"), 1)) +
-  theme(axis.title.x = element_text(face="bold", size=10))   
-
+  theme(plot.title = element_text(hjust = 0.5))+geom_bar(position="dodge") + scale_fill_manual(values = alpha(c("coral","darkcyan","gray","red", "pink", "green","darkorchid1"), 1)) +theme(axis.title.x = element_text(face="bold", size=10))
 
 ```
 
@@ -200,23 +195,19 @@ En la figura 8 se pueden observar los 9 barrios donde más han ocurrido accident
 
 
 ```{r out.width="60%", message=F, warning=F}
-
 pi=table(datos$BARRIO)
 po=data.frame(pi)
-
 Barrio= c("La Candelaria","Campo Amor","Caribe","Perpetuo Socorro","Colon","Santa fe", "Cabecera San Antonio de Prado","Conquistadores","Villa Nueva","San Benito")
 Cantidad_accidentes= c(5901, 5142, 5093, 4858, 4489, 4108, 3986, 3767, 3726, 3538)
-
 db=data.frame(Barrio,Cantidad_accidentes)
-
 gr4 <- ggplot(db, aes(x=Barrio, y=Cantidad_accidentes, fill=Barrio)) + geom_bar(stat="identity")+ labs(title="Barrios donde se presentaron más accidentes",caption = "Figura 8",x = "Barrio")+
   theme (plot.title = element_text(family="Comic Sans MS",
-                                  size=rel(1.5),  
+                                  size=rel(2),  
                                   vjust=2,  
                                   face="bold", 
                                   color="black", 
                                   lineheight=1.0)) + 
-  theme(plot.title = element_text(hjust = 0.5))+
+  theme(plot.title = element_text(hjust = 0.05))+
   scale_fill_brewer(palette = "Set3")+
     theme(axis.text.x = element_blank(), axis.ticks = element_blank(),axis.title = element_blank()) 
 gr4
