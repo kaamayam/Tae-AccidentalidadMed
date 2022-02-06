@@ -41,7 +41,7 @@ Encontramos en las observaciones de la variable Barrio que 18395 accidentes regi
 
 
 ```{r}
-datos <- readRDS("df.rds")
+datos <- readRDS("Accidentalidad_medellin/bases_datos/df.rds")
 head(datos,50) %>%kbl() %>%  kable_styling(font_size = 12) %>%
   kableExtra::scroll_box(width = "100%", height = "200px")
 ```
@@ -242,7 +242,7 @@ Se añaden algunas variables de intéres como
 ```{r echo=TRUE, eval=F}
 # Arreglando variables predictivas
 ad=as.Date(conteos$FECHA_ACCIDENTE)
-holidays_fecha<-readRDS("Holidays.rds") %>% data.frame()
+holidays_fecha<-readRDS("Accidentalidad_medellin/bases_datos/Holidays.rds") %>% data.frame()
 conteos$dia_n <-  as.integer(format(ad, "%d"))
 conteos$dia <- as.factor(wday(ad, label = TRUE))
 conteos$mes <- as.factor(format(ad, "%b")) 
@@ -257,7 +257,7 @@ Teniendo la base de datos la siguiente estructura:
 
 
 ```{r }
-conteos <- readRDS("conteos_con.rds")
+conteos <- readRDS("Accidentalidad_medellin/bases_datos/conteos_con.rds")
 head(conteos,50) %>%kbl() %>%  kable_styling(font_size = 12) %>%
   kableExtra::scroll_box(width = "100%", height = "200px")
 ```
@@ -287,7 +287,7 @@ Los modelos predictivos se construyeron con los datos transformados de los años
 
 
 ```{r echo=T}
-train<- readRDS("train.rds")
+train<- readRDS("Accidentalidad_medellin/bases_datos/train.rds")
 validation <- conteos %>% filter(ano >= 2018 | ano <= 2019)
 test <- conteos  %>% filter(ano >= 2020)
 ```
@@ -311,7 +311,7 @@ fit.1 <- glm (n ~ ano + mes + dia_n + dia + holi_bin+CLASE_ACCIDENTE+BARRIO+FECH
 
 ```{r}
 
-fit.1<-readRDS("Modelo.rds")
+fit.1<-readRDS("Accidentalidad_medellin/bases_datos/Modelo.rds")
 #summary(fit.1)
 ((1.430139-0.3378149)/0.3378149)*100
 ```
